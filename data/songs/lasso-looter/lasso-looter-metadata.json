@@ -23,20 +23,26 @@
       "girlfriend": "gf-yeehaw",
       "opponent": "doki-yeehaw",
       "instrumental": "",
-      "altInstrumentals": [      ]
+      "altInstrumentals": [      ],
+      "opponentVocals": [
+        "doki-yeehaw"
+      ],
+      "playerVocals": [
+        "bf-yeehaw"
+      ]
     },
     "stage": "tomato-saloon",
     "noteStyle": "simply-dokibird",
-    "album": "tomato-demo",
     "ratings": {
       "easy": 4,
-      "hard": 10,
-      "normal": 6
+      "normal": 6,
+      "hard": 10
     },
+    "album": "tomato-demo",
     "previewStart": 0,
     "previewEnd": 0
   },
-  "generatedBy": "Friday Night Funkin' - v0.5.3",
+  "generatedBy": "Friday Night Funkin' - v0.7.3",
   "timeFormat": "ms",
   "timeChanges": [
     {
