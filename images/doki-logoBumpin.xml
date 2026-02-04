@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Free texture packer v0.6.7 http://free-tex-packer.com
+-->
+<TextureAtlas imagePath="dokiLogoBumpin.png" width="1136" height="746">
+  <SubTexture name="doki-logoBumpin-20007" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20005" x="1" y="376"  width="583" height="369" frameX="-4" frameY="-2" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20003" x="586" y="376"  width="540" height="328" frameX="-25" frameY="-21" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20001" x="593" y="1"  width="542" height="319" frameX="-24" frameY="-25" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20002" x="593" y="1"  width="542" height="319" frameX="-24" frameY="-25" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20004" x="586" y="376"  width="540" height="328" frameX="-25" frameY="-21" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20006" x="1" y="376"  width="583" height="369" frameX="-4" frameY="-2" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20008" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20009" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20010" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20011" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20012" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20013" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20014" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+  <SubTexture name="doki-logoBumpin-20015" x="1" y="1"  width="590" height="373" frameX="-0" frameY="-0" frameWidth="590" frameHeight="373"/>
+</TextureAtlas>
