@@ -3,40 +3,10 @@
   "description": "jkterjter",
   "contributors": [
   {
-    "name": "johfydrawsstuff"
-  },
-  {
-    "name": "EthanX"
-  },
-  {
-    "name": "Yolk"
-  },
-  {
-    "name": "DumbPNG"
-  },
-  {
-    "name": "Kromiibytes"
-  },
-  {
-    "name": "afleefflox"
-  },
-  {
-    "name": "Binpuki"
-  },
-  {
-    "name": "Mikolka"
-  },
-  {
-    "name": "SakuraCharter"
-  },
-  {
-    "name": "EmiliaFumo"
-  },
-  {
-    "name": "Devi"
+    "name": "Team DokiFunk"
   }
 ],
-  "api_version": "0.7.0",
+  "api_version": "0.8.0",
   "mod_version": "0.1.2",
   "license": "Apache-2.0"
 }
