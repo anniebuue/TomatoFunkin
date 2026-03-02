@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "name": "Doki Sticker Pack",
+  "artist": "johfydrawsstuff",
+  "stickers": [
+    "transitionSwag/doki/dokiSticker1",
+    "transitionSwag/doki/dokiSticker2",
+    "transitionSwag/doki/dokiSticker3",
+    "transitionSwag/doki/dokiSticker4",
+    "transitionSwag/doki/dokiSticker1-Shiny",
+    "transitionSwag/doki/dokiSticker2-Shiny",
+    "transitionSwag/doki/dokiSticker3-Shiny",
+    "transitionSwag/doki/dokiSticker4-Shiny",
+    "transitionSwag/doki/dragoonSticker1",
+    "transitionSwag/doki/dragoonSticker2",
+    "transitionSwag/doki/dragoonSticker1-Shiny",
+    "transitionSwag/doki/dragoonSticker2-Shiny"
+  ]
+}
