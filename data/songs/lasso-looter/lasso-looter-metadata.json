@@ -1,62 +1,43 @@
 {
-  "version": "2.2.4",
-  "songName": "Lasso Looter",
-  "artist": "Yolk",
-  "charter": " johferson09  ",
-  "divisions": 96,
-  "looped": false,
-  "offsets": {
-    "instrumental": 0,
-    "altInstrumentals": {    },
-    "vocals": {    },
-    "altVocals": {    }
+ "version": "2.2.4",
+ "songName": "Lasso Looter",
+ "artist": "Yolk",
+ "charter": " johferson09  ",
+ "offsets": { },
+ "playData": {
+  "difficulties": [
+   "easy",
+   "normal",
+   "hard"
+  ],
+  "characters": {
+   "player": "bf-yeehaw",
+   "girlfriend": "gf-yeehaw",
+   "opponent": "doki-yeehaw",
+   "opponentVocals": [
+    "doki-yeehaw"
+   ],
+   "playerVocals": [
+    "bf-yeehaw"
+   ]
   },
-  "playData": {
-    "songVariations": [    ],
-    "difficulties": [
-      "easy",
-      "normal",
-      "hard"
-    ],
-    "characters": {
-      "player": "bf-yeehaw",
-      "girlfriend": "gf-yeehaw",
-      "opponent": "doki-yeehaw",
-      "instrumental": "",
-      "altInstrumentals": [      ],
-      "opponentVocals": [
-        "doki-yeehaw"
-      ],
-      "playerVocals": [
-        "bf-yeehaw"
-      ]
-    },
-    "stage": "tomato-saloon",
-    "noteStyle": "simply-dokibird",
-    "ratings": {
-      "easy": 4,
-      "normal": 6,
-      "hard": 10
-    },
-    "album": "tomato-demo",
-    "previewStart": 0,
-    "previewEnd": 0
+  "stage": "tomato-saloon-fix",
+  "noteStyle": "simply-dokibird",
+  "ratings": {
+   "easy": 4,
+   "normal": 6,
+   "hard": 10
   },
-  "generatedBy": "Friday Night Funkin' - v0.7.3",
-  "timeFormat": "ms",
-  "timeChanges": [
-    {
-      "t": 0,
-      "b": 0,
-      "bpm": 150,
-      "n": 4,
-      "d": 4,
-      "bt": [
-        4,
-        4,
-        4,
-        4
-      ]
-    }
-  ]
+  "album": "tomato-demo",
+  "previewEnd": 0
+ },
+ "generatedBy": "Friday Night Funkin' - v0.8.5",
+ "timeChanges": [
+  {
+   "t": 0,
+   "b": 0,
+   "bpm": 150,
+   "bt": [4, 4, 4, 4]
+  }
+ ]
 }

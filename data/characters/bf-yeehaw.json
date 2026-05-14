@@ -5,9 +5,9 @@
 	"assetPath": "shared:characters/bf-yeehaw",
 	"flipX": true,
 	"singTime": 8.0,
-	"offsets": [-1150, -380],
-	"scale": 0.9,
-	"cameraOffsets": [530, 247],
+	"offsets": [17, 14],
+
+	"cameraOffsets": [-3, -80],
 	"healthIcon": {
 		"id": "bf-johfy-reskin"
 	},

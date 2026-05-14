@@ -4,9 +4,9 @@
 	"renderType": "animateatlas",
 	"assetPath": "shared:characters/doki-yeehaw",
 	"singTime": 8.0,
-	"offsets": [100, -180],
-	"scale": 0.9,
-	"cameraOffsets": [250, 76],
+	"offsets": [13, 3],
+
+	"cameraOffsets": [11, 6],
 	"healthIcon": {
 		"id": "dokibird"
 	},
