@@ -12,7 +12,7 @@ import funkin.play.song.Song;
 
 class Heist extends Song
 {
-  var CUTSCENE_PATH = 'mods/Tomato Funkin DEMO/videos/heist-cutscene-compressed.mp4'; // Where is the video?
+  var CUTSCENE_PATH = 'videos/heist-cutscene-compressed.mp4'; // Where is the video?
   var SONG_DELAY = 2100; // How long to wait before starting the song alongside the video? (in ms) 1000ms = 1s
 
   var hasSeenInitialCutScene:Bool = false;

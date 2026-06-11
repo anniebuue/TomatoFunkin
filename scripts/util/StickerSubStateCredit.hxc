@@ -2,8 +2,8 @@ import funkin.modding.base.ScriptedMusicBeatSubState;
 import StringTools;
 import flixel.group.FlxTypedSpriteGroup;
 import flixel.FlxG;
-import funkin.ui.transition.StickerInfo;
-import funkin.ui.transition.StickerSprite;
+import funkin.ui.transition.stickers.StickerPack;
+import funkin.ui.transition.stickers.StickerSprite;
 import haxe.ds.StringMap;
 import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
@@ -37,7 +37,7 @@ class StickerSubStateCredit extends ScriptedMusicBeatSubState
 
         regenStickers();
 
-        var stickerInfo:StickerInfo = new StickerInfo(stickerName);
+        var stickerInfo:StickerPack = new StickerPack(stickerName);
     }
 
     function regenStickers():Void
@@ -45,9 +45,9 @@ class StickerSubStateCredit extends ScriptedMusicBeatSubState
         if (grpStickers.members.length > 0)
             grpStickers.clear();
 
-        var stickerInfo:StickerInfo = new StickerInfo(stickerName);
+        var stickerInfo:StickerPack = new StickerPack(stickerName);
         
-        for (stickerSets in stickerInfo.getPack("all"))
+        for (stickerSets in stickerInfo._fetchData("all"))
         {
             stickers.set(stickerSets, stickerInfo.getStickers(stickerSets));
             trace(stickers);

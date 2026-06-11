@@ -39,7 +39,7 @@ class Dokibird extends Song
     game.currentStage.add(dokiMic);
     game.currentStage.refresh();
 
-    smoke = new FlxAtlasSprite(0, 0, Paths.animateAtlas("smoke"));
+    smoke = new FlxAtlasSprite(0, 0, Paths.animateAtlas('smoke'));
     smoke.camera = game.camHUD;
     smoke.alpha = 0.001;
     game.add(smoke);
@@ -69,7 +69,7 @@ class Dokibird extends Song
       });
       FlxTimer.wait(1.9, () -> {
         smoke.alpha = 1;
-        smoke.playAnimation("");
+        smoke.anim.play('Symbol 2');
       });
 
       event.cancel();

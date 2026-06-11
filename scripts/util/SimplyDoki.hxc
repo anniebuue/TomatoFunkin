@@ -131,8 +131,11 @@ class SimplyDokiModule extends Module
         {
             var curBarLine = barLineArray[i];
             var renderedNotes = curBarLine.notes.members;
-            for (j in 0...renderedNotes.length)
-                updateNote(renderedNotes[j]);
+			if (renderedNotes != null)
+			{
+				for (j in 0...renderedNotes.length)
+					updateNote(renderedNotes[j]);
+			}
         }
     }
 

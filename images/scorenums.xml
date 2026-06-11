@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Free texture packer v0.6.7 http://free-tex-packer.com
+-->
+<TextureAtlas imagePath="scorenums.png" width="45" height="1472">
+  <SubTexture name="negative" x="1" y="1"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num0-default" x="1" y="65"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num1-default" x="1" y="129"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num2-default" x="1" y="193"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num3-default" x="1" y="257"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num4-default" x="1" y="321"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num5-default" x="1" y="385"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num6-default" x="1" y="449"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num7-default" x="1" y="513"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num8-default" x="1" y="577"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num9-default" x="1" y="641"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="comma-default" x="1" y="705"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num0-miss" x="1" y="769"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num1-miss" x="1" y="833"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num2-miss" x="1" y="897"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num3-miss" x="1" y="961"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num4-miss" x="1" y="1025"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num5-miss" x="1" y="1089"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num6-miss" x="1" y="1153"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num7-miss" x="1" y="1217"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num8-miss" x="1" y="1281"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="num9-miss" x="1" y="1345"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+  <SubTexture name="comma-miss" x="1" y="1409"  width="45" height="64" frameX="-0" frameY="-0" frameWidth="45" frameHeight="64"/>
+</TextureAtlas>

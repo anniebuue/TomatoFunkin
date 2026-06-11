@@ -1,11 +1,10 @@
-
-
 import funkin.modding.base.ScriptedMusicBeatState;
 import flixel.FlxSubState;
 import funkin.Paths;
 import funkin.ui.MusicBeatState;
 import flixel.addons.display.FlxBackdrop;
 import funkin.modding.base.ScriptedFlxSpriteGroup;
+import flixel.group.FlxTypedSpriteGroup;
 import flixel.FlxObject;
 import funkin.graphics.FunkinCamera;
 import funkin.audio.FunkinSound;
@@ -23,6 +22,8 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
 import StringTools;
 
 class CustomMainMenu extends ScriptedMusicBeatState
@@ -31,13 +32,14 @@ class CustomMainMenu extends ScriptedMusicBeatState
   var freeplay:FreeplayState;
 
   var checker:FlxBackdrop;
-  var menuItems:ScriptedFlxSpriteGroup;
+  var menuItems:FlxTypedSpriteGroup;
   var curSelected:Int = 0;
   var theBarThing:FunkinSprite;
   var theBarThing2:FunkinSprite;
   var funiPoster:FunkinSprite;
   var camHUD:FlxCamera;
   var optionShit:Array<String> = ['story', 'freeplay', 'merch', 'credits', 'options'];
+  var confirming:Bool = false;
 
   override function create()
   {
@@ -87,7 +89,7 @@ class CustomMainMenu extends ScriptedMusicBeatState
     add(theBarThing2);
 
     if (freeplay == null || !freeplay.alive) FunkinSound.playMusic('freakyMenu', {overrideExisting: true, restartTrack: false});
-    menuItems = new ScriptedFlxSpriteGroup();
+    menuItems = new FlxTypedSpriteGroup();
     add(menuItems);
 
     for (i in 0...optionShit.length)
@@ -134,6 +136,8 @@ class CustomMainMenu extends ScriptedMusicBeatState
         freeplay = null;
       }
     }
+	
+	
   }
 
   override function update(elapsed:Float):Void
@@ -150,6 +154,11 @@ class CustomMainMenu extends ScriptedMusicBeatState
 
   function doControl()
   {
+	if (confirming)
+    {
+      return;
+    }
+  
     if (controls.UI_UP_P) changeItem(-1);
 
     if (controls.UI_DOWN_P) changeItem(1);
@@ -169,24 +178,27 @@ class CustomMainMenu extends ScriptedMusicBeatState
 
     if (controls.ACCEPT)
     {
+	  confirming = true;
       FunkinSound.playOnce(Paths.sound('confirmMenu'));
       switch (optionShit[curSelected])
       {
         case 'story':
-          new FlxTimer().start(0.4, function(_) FlxG.switchState(new StoryMenuState()));
+          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(new StoryMenuState()); } );
 
         case 'freeplay':
           persistentDraw = true;
           persistentUpdate = false;
           FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-          new FlxTimer().start(0.4, function(_) openSubState(new FreeplayState()));
+          new FlxTimer().start(0.4, function(_) { confirming = false; openSubState(new FreeplayState()); } );
         case 'merch':
-          WindowUtil.openURL(Constants.URL_MERCH);
+		  WindowUtil.openURL('https://dokimerch.com/');
+		  confirming = false;
+          // WindowUtil.openURL(Constants.URL_MERCH);
           return; // maybe skip animating here???
         case 'options':
-          new FlxTimer().start(0.4, function(_) FlxG.switchState(new OptionsState()));
+          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(new OptionsState()); } );
         case 'credits':
-          new FlxTimer().start(0.4, function(_) FlxG.switchState(ScriptedMusicBeatState.init("PsychCredits")));
+          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(ScriptedMusicBeatState.init("PsychCredits")); } );
       }
 
       for (i in 0...menuItems.members.length)

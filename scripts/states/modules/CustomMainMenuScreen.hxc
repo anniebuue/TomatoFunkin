@@ -8,13 +8,14 @@ import funkin.ui.freeplay.FreeplayState;
 import funkin.modding.module.Module;
 import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.ui.mainmenu.MainMenuState;
-import funkin.ui.transition.StickerSubState;
+import funkin.ui.transition.stickers.StickerSubState;
+import funkin.ui.story.StoryMenuState;
 import flixel.FlxG;
 
 class CustomMainMenuScreen extends Module
 {
   var freePlay:FreeplayState = null;
-  var state:Int = 0;
+  var stateMenu:Int = 0;
 
   // 0 - Outside
   // 1 - In Freeplay
@@ -66,7 +67,7 @@ class CustomMainMenuScreen extends Module
         trace(freePlay);
         var st = ScriptedMusicBeatState.init("CustomMainMenu");
         st.scriptSet("freeplay", freePlay);
-        if (freePlay != null && freePlay.prepForNewRank) state = 3;
+        if (freePlay != null && freePlay.prepForNewRank) stateMenu = 3;
         return st; // 3
       });
     }
@@ -92,14 +93,14 @@ class CustomMainMenuScreen extends Module
     }
     var observer_value = freePlay.backingCard.cardGlow.visible; // freePlay.backingCard.funnyScroll.visible
 
-    if (state == 1 && observer_value)
+    if (stateMenu == 1 && observer_value)
     {
       // `prevOpange` got shown AND hidden
       trace("We are closing freeplay now");
       FlxTimer.globalManager.clear();
       FlxG.state.persistentDraw = true;
 
-      state = 2;
+      stateMenu = 2;
       freePlay.backingCard.cardGlow.visible = false;
       trace("Closing");
       new FlxTimer().start(0.4, (_) -> {
@@ -114,14 +115,14 @@ class CustomMainMenuScreen extends Module
         // FlxG.sound.music.fadeIn(4.0, 0.0, 1.0);
         freePlay.close();
         freePlay.alive = false;
-        state = 0;
+        stateMenu = 0;
       });
     }
-    else if (state != 1 && observer_value)
+    else if (stateMenu != 1 && observer_value)
     {
       // We are done initing
       trace("Done initting");
-      state = 1;
+      stateMenu = 1;
       freePlay.backingCard.cardGlow.visible = false;
     }
   }

@@ -1,5 +1,6 @@
 import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.modding.base.ScriptedFlxSpriteGroup;
+import flixel.group.FlxTypedSpriteGroup;
 import funkin.modding.base.ScriptedFunkinSprite;
 import funkin.modding.base.ScriptedMusicBeatSubState;
 import funkin.graphics.FunkinSprite;
@@ -13,6 +14,7 @@ import flixel.addons.display.FlxBackdrop;
 import funkin.util.WindowUtil;
 import funkin.audio.FunkinSound;
 import hxvlc.flixel.FlxVideoSprite;
+import flixel.util.FlxTimer;
 
 import StringTools;
 class PsychCredits extends ScriptedMusicBeatState
@@ -20,7 +22,7 @@ class PsychCredits extends ScriptedMusicBeatState
     var bg:FunkinSprite;
     var curSelected:Int = -1;
 
-    var grpOptions:ScriptedFlxSpriteGroup;
+    var grpOptions:FlxTypedSpriteGroup;
     var creditsStuff:Array<Array<String>> = [];
 	var descText:FlxText;
     var descBox:ScriptedFunkinSprite;
@@ -74,7 +76,7 @@ class PsychCredits extends ScriptedMusicBeatState
         bg.screenCenter();
         add(bg);
         
-        grpOptions = new ScriptedFlxSpriteGroup();
+        grpOptions = new FlxTypedSpriteGroup();
 		add(grpOptions);
 
         for(i in defaultList) creditsStuff.push(i);
@@ -136,6 +138,8 @@ class PsychCredits extends ScriptedMusicBeatState
         super.update(elapsed);
 
         if (FlxG.sound.music != null && FlxG.sound.music.volume < 0.7) FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+
+		if (quitting) return;
 
         if(!quitting)
         {
@@ -206,9 +210,9 @@ class PsychCredits extends ScriptedMusicBeatState
 
         if (controls.BACK)
         {
-            FlxG.switchState(() -> ScriptedMusicBeatState.init("CustomMainMenu"));
             FunkinSound.playOnce(Paths.sound('cancelMenu'));
             quitting = true;
+			new FlxTimer().start(0.4, function(_) { quitting = false; FlxG.switchState(() -> ScriptedMusicBeatState.init("CustomMainMenu")); } );
         }
     }
 

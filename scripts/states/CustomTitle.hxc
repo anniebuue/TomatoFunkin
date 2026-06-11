@@ -40,14 +40,14 @@ class CustomTitle extends MusicBeatState
         bg.screenCenter();
         add(bg);
 
-        logoBl = FunkinSprite.createSparrow(21, 18, "dokiLogoBumpin");
+        logoBl = FunkinSprite.createSparrow(21, 18, "doki-LogoBumpin");
         logoBl.animation.addByPrefix('bump', 'doki-logoBumpin-2', 24);
         logoBl.animation.play('bump');
         logoBl.setGraphicSize(Std.int(logoBl.width * 1));
         logoBl.updateHitbox();
         add(logoBl);
 
-        dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas('doki-freakymenu'));
+        dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas('start-menu/doki-freakymenu'));
         dokiBitch.scale.set(1, 1);
         dokiBitch.updateHitbox();
         dokiBitch.anim.play('doki-freakymenu', true);
@@ -84,7 +84,7 @@ class CustomTitle extends MusicBeatState
 
     override function update(elapsed:Float):Void
     {
-        FlxG.bitmapLog.add(FlxG.camera.buffer);
+        if (FlxG.camera.buffer != null) FlxG.bitmapLog.add(FlxG.camera.buffer);
 
         if (FlxG.keys.pressed.UP) FlxG.sound.music.pitch += 0.5 * elapsed;
         if (FlxG.keys.pressed.DOWN) FlxG.sound.music.pitch -= 0.5 * elapsed;

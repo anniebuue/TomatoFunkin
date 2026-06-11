@@ -28,8 +28,8 @@ class IconColoredHealthBar extends Module {
     static var bfColor;
     static var dadColor;
     function updateHealthBarColors() {
-        bfColor = dominantColor(state.iconP1);
-        dadColor = dominantColor(state.iconP2);
+        bfColor = dominantColor(stateHUD.iconP1);
+        dadColor = dominantColor(stateHUD.iconP2);
 
         fillHealthBar();
     }
@@ -42,9 +42,9 @@ class IconColoredHealthBar extends Module {
         Constants.COLOR_HEALTH_BAR_GREEN = bfColor;
         Constants.COLOR_HEALTH_BAR_RED = dadColor;
 
-        if (!inPlay || state == null || state.healthBar == null) return;
+        if (!inPlay || stateHUD == null || stateHUD.healthBar == null) return;
 
-        state.healthBar.createFilledBar(dadColor,bfColor);
+        stateHUD.healthBar.createFilledBar(dadColor,bfColor);
     }
 
     // based off dominantColor from psych engine (in CoolUtils.hx)
@@ -90,7 +90,7 @@ class IconColoredHealthBar extends Module {
     }
 
     // i took this from kade hud because im LAZY shut up please :(
-    var state;
+    var stateHUD;
 	var inPlay = false;
 	override function onStateChangeBegin(ev:ScriptEvent) {
 		super.onStateChangeBegin(ev);
@@ -100,16 +100,16 @@ class IconColoredHealthBar extends Module {
 	override function onStateChangeEnd(ev:ScriptEvent) {
 		super.onStateChangeEnd(ev);
 
-		state = PlayState.instance;
+		stateHUD = PlayState.instance;
 		inPlay = Std.isOfType(FlxG.state, PlayState);
-		if (state != null && inPlay) {
+		if (stateHUD != null && inPlay) {
 			onPlayStateEnter();
 			return;
 		}
 	}
 
     function onPlayStateEnter() {
-        state.healthBarBG.makeGraphic(601, 19, 0xFF22182E);
+        stateHUD.healthBarBG.makeGraphic(601, 19, 0xFF22182E);
         updateHealthBarColors();
     }
 }

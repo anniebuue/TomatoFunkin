@@ -101,9 +101,9 @@ class CustomUI extends Module
     rankSprite.centerOrigin();
     rankSprite.scale.set(0.7, 0.7);
     rankSprite.cameras = [game.camHUD];
-    for(ranky in ['GOLD PERFECT', 'PERFECT', 'EXCELLENT', 'GREAT', 'GOOD', 'LOSE'])
-      rankSprite.animation.addByPrefix(ranky, "rankIndicator " + ranky, 24, true);
-    rankSprite.animation.play("GOLD PERFECT", true);
+    for(ranky in ['perfect-gold', 'perfect', 'excellent', 'great', 'good', 'lose'])
+      rankSprite.animation.addByPrefix(ranky, "rank-" + ranky, 24, true);
+    rankSprite.animation.play("perfect-gold", true);
     game.add(rankSprite);
 
     game.refresh();
@@ -150,7 +150,7 @@ class CustomUI extends Module
 
     if (game.isBotPlayMode) return;
 
-    scoreTxt.scriptCall("displayText", [Std.string(game.songScore), true]);
+    scoreTxt.scriptCall("displayText", [Std.string(Std.int(game.songScore)), true]);
     missedText.scriptCall("displayText", [Std.string(scuffs), false]);
   }
 
@@ -205,29 +205,29 @@ class CustomUI extends Module
 
     if (isSFC)
     {
-      rankSprite.animation.play('GOLD PERFECT', false, false, 0);
+      rankSprite.animation.play('perfect-gold', false, false, 0);
     }
     else
     {
       if (grade == Constants.RANK_PERFECT_THRESHOLD)
         {
-          rankSprite.animation.play('PERFECT', false, false, 0);
+          rankSprite.animation.play('perfect', false, false, 0);
         }
         else if (grade >= Constants.RANK_EXCELLENT_THRESHOLD)
         {
-          rankSprite.animation.play('EXCELLENT', false, false, 0);
+          rankSprite.animation.play('excellent', false, false, 0);
         }
         else if (grade >= Constants.RANK_GREAT_THRESHOLD)
         {
-          rankSprite.animation.play('GREAT', false, false, 0);
+          rankSprite.animation.play('great', false, false, 0);
         }
         else if (grade >= Constants.RANK_GOOD_THRESHOLD)
         {
-          rankSprite.animation.play('GOOD', false, false, 0);
+          rankSprite.animation.play('good', false, false, 0);
         }
         else
         {
-          rankSprite.animation.play('LOSE', false, false, 0);
+          rankSprite.animation.play('lose', false, false, 0);
         }
     }
   }

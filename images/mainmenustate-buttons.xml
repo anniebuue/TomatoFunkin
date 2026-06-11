@@ -4,13 +4,13 @@ Created with Free texture packer v0.6.7 http://free-tex-packer.com
 -->
 <TextureAtlas imagePath="mainmenustate-buttons.png" width="560" height="1280">
   <SubTexture name="capsule-credits-noselect" x="1" y="1"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
-  <SubTexture name="capsule-credits" x="1" y="129"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
+  <SubTexture name="capsule-credits0" x="1" y="129"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
   <SubTexture name="capsule-freeplay-noselect" x="1" y="257"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
-  <SubTexture name="capsule-freeplay" x="1" y="385"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
+  <SubTexture name="capsule-freeplay0" x="1" y="385"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
   <SubTexture name="capsule-merch-noselect" x="1" y="513"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
-  <SubTexture name="capsule-merch" x="1" y="641"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
+  <SubTexture name="capsule-merch0" x="1" y="641"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
   <SubTexture name="capsule-options-noselect" x="1" y="769"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
-  <SubTexture name="capsule-options" x="1" y="897"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
+  <SubTexture name="capsule-options0" x="1" y="897"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
   <SubTexture name="capsule-story-noselect" x="1" y="1025"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
-  <SubTexture name="capsule-story" x="1" y="1153"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
+  <SubTexture name="capsule-story0" x="1" y="1153"  width="558" height="126" frameX="-0" frameY="-0" frameWidth="558" frameHeight="126"/>
 </TextureAtlas>

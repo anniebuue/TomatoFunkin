@@ -1,7 +1,6 @@
-
-
 import funkin.graphics.FunkinSprite;
 import funkin.modding.base.ScriptedFlxSpriteGroup;
+import funkin.FunkinMemory;
 
 class FunniNumber extends ScriptedFlxSpriteGroup
 {
@@ -10,7 +9,8 @@ class FunniNumber extends ScriptedFlxSpriteGroup
 
   public function new()
   {
-    FunkinSprite.cacheSparrow("scorenums");
+    // FunkinSprite.cacheSparrow("scorenums");
+	FunkinMemory.cacheTexture(Paths.image("scorenums"));
     super();
   }
 
@@ -18,15 +18,31 @@ class FunniNumber extends ScriptedFlxSpriteGroup
   {
     if (text == prevText) return;
     prevText = text;
-    for (i in 0...text.length)
+	
+	//Adds commas
+	var textConverted:String = "";
+	var commaCounter:Int = 0;
+	for (i in 0...text.length)
+	{
+	  var currentChar = text.charAt(text.length - 1 - i);
+	  commaCounter = commaCounter + 1;
+	  if (commaCounter >= 4 && currentChar != "-")
+	  {
+		commaCounter = 0;
+		textConverted = "," + textConverted;
+	  }
+	  textConverted = currentChar + textConverted;
+	}
+	
+    for (i in 0...textConverted.length)
     {
       if (nums.length <= i) addDigit();
       var prefix = isScore ? "" : "-miss";
-      var animName = (text.charAt(i) == "-") ? "minus" : text.charAt(i) + prefix;
+      var animName = (textConverted.charAt(i) == "-") ? ("minus") : (textConverted.charAt(i) + prefix);
 
       nums[i].animation.play(animName, true);
     }
-    while (nums.length > text.length)
+    while (nums.length > textConverted.length)
     {
       var trash = nums.pop();
       remove(trash);
@@ -37,18 +53,19 @@ class FunniNumber extends ScriptedFlxSpriteGroup
   function addDigit()
   {
     var curLen:Int = nums.length;
-    var sprite = FunkinSprite.createSparrow(30 * curLen, 0, "scorenums");
+    var sprite:FunkinSprite = FunkinSprite.createSparrow(30 * curLen, 0, "scorenums");
     sprite.animation.addByPrefix("minus", "negative", 1, false);
-    sprite.animation.addByNames("0", ["num00000"], 1, false);
-    sprite.animation.addByNames("1", ["num10000"], 1, false);
-    sprite.animation.addByNames("2", ["num20000"], 1, false);
-    sprite.animation.addByNames("3", ["num30000"], 1, false);
-    sprite.animation.addByNames("4", ["num40000"], 1, false);
-    sprite.animation.addByNames("5", ["num50000"], 1, false);
-    sprite.animation.addByNames("6", ["num60000"], 1, false);
-    sprite.animation.addByNames("7", ["num70000"], 1, false);
-    sprite.animation.addByNames("8", ["num80000"], 1, false);
-    sprite.animation.addByNames("9", ["num90000"], 1, false);
+    sprite.animation.addByPrefix("0", "num0-default", 1, false);
+    sprite.animation.addByPrefix("1", "num1-default", 1, false);
+    sprite.animation.addByPrefix("2", "num2-default", 1, false);
+    sprite.animation.addByPrefix("3", "num3-default", 1, false);
+    sprite.animation.addByPrefix("4", "num4-default", 1, false);
+    sprite.animation.addByPrefix("5", "num5-default", 1, false);
+    sprite.animation.addByPrefix("6", "num6-default", 1, false);
+    sprite.animation.addByPrefix("7", "num7-default", 1, false);
+    sprite.animation.addByPrefix("8", "num8-default", 1, false);
+    sprite.animation.addByPrefix("9", "num9-default", 1, false);
+    sprite.animation.addByPrefix(",", "comma-default", 1, false);
     sprite.animation.addByPrefix("0-miss", "num0-miss", 1, false);
     sprite.animation.addByPrefix("1-miss", "num1-miss", 1, false);
     sprite.animation.addByPrefix("2-miss", "num2-miss", 1, false);
@@ -59,6 +76,7 @@ class FunniNumber extends ScriptedFlxSpriteGroup
     sprite.animation.addByPrefix("7-miss", "num7-miss", 1, false);
     sprite.animation.addByPrefix("8-miss", "num8-miss", 1, false);
     sprite.animation.addByPrefix("9-miss", "num9-miss", 1, false);
+    sprite.animation.addByPrefix(",-miss", "comma-miss", 1, false);
     nums.push(sprite);
     add(sprite);
     sprite.scale.set(0.6, 0.6);
