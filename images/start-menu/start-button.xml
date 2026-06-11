@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="start-button.png">
+	<!-- Created with Adobe Flash CS6 version 12.0.2.529 -->
+	<!-- http://www.adobe.com/products/flash.html -->
+	<SubTexture name="start-idle instance 10000" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10001" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10002" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10003" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10004" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10005" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10006" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10007" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10008" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10009" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-idle instance 10010" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10011" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10012" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10013" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10014" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10015" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10016" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10017" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10018" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-idle instance 10019" x="0" y="0" width="0" height="0" frameX="803" frameY="623" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-pressed instance 10000" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-pressed instance 10001" x="0" y="0" width="472" height="85"/>
+	<SubTexture name="start-pressed instance 10002" x="0" y="0" width="0" height="0" frameX="803" frameY="838" frameWidth="472" frameHeight="85"/>
+	<SubTexture name="start-pressed instance 10003" x="0" y="0" width="0" height="0" frameX="803" frameY="838" frameWidth="472" frameHeight="85"/>
+</TextureAtlas>
