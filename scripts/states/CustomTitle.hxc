@@ -11,6 +11,8 @@ import funkin.ui.title.AttractState;
 import funkin.audio.FunkinSound;
 import funkin.ui.mainmenu.MainMenuState;
 import flixel.util.FlxTimer;
+import openfl.display.BlendMode;
+import flixel.addons.display.FlxBackdrop;
 import StringTools;
 
 class CustomTitle extends MusicBeatState
@@ -29,6 +31,13 @@ class CustomTitle extends MusicBeatState
 
         startIntro();
     }
+	
+    var bg_1:FlxBackdrop;
+    var bg_2:FlxBackdrop;
+    var bg_3:FlxBackdrop;
+    var bg_4:FlxBackdrop;
+    var bg_5:FlxBackdrop;
+    var bg_6:FlxBackdrop;
 
     var logoBl:FunkinSprite;
     var dokiBitch:FlxAtlasSprite;
@@ -36,27 +45,58 @@ class CustomTitle extends MusicBeatState
     {
         playMenuMusic();
 
-        var bg:FunkinSprite = new FunkinSprite(0, 0).loadTexture("doki-bg");
-        bg.screenCenter();
-        add(bg);
+        var bg_0:FunkinSprite = new FunkinSprite(0, 0).loadTexture("start-menu/bg");
+        bg_0.screenCenter();
+        add(bg_0);
+		
+		bg_1 = new FlxBackdrop(Paths.image("start-menu/cloud-2"), 0x01, 0, 0);
+		bg_1.y = 120;
+		bg_1.blend = BlendMode.ADD;
+        add(bg_1);
+		
+		bg_2 = new FlxBackdrop(Paths.image("start-menu/cloud-1"), 0x01, 0, 0);
+		bg_2.y = -142;
+		bg_2.blend = BlendMode.ADD;
+        add(bg_2);
+		
+		bg_3 = new FlxBackdrop(Paths.image("start-menu/buildings-2"), 0x01, 0, 0);
+		bg_3.y = 227;
+        add(bg_3);
+		
+		bg_4 = new FlxBackdrop(Paths.image("start-menu/fog-2"), 0x01, 0, 0);
+		bg_4.y = 452;
+		bg_4.blend = BlendMode.ADD;
+        add(bg_4);
+		
+		bg_5 = new FlxBackdrop(Paths.image("start-menu/buildings-1"), 0x01, 0, 0);
+		bg_5.y = 165;
+        add(bg_5);
+		
+		bg_6 = new FlxBackdrop(Paths.image("start-menu/fog-1"), 0x01, 0, 0);
+		bg_6.y = 499;
+		bg_6.blend = BlendMode.ADD;
+        add(bg_6);
 
-        logoBl = FunkinSprite.createSparrow(21, 18, "doki-LogoBumpin");
+        logoBl = FunkinSprite.createSparrow(670, 18, "doki-LogoBumpin");
         logoBl.animation.addByPrefix('bump', 'doki-logoBumpin-2', 24);
         logoBl.animation.play('bump');
         logoBl.setGraphicSize(Std.int(logoBl.width * 1));
         logoBl.updateHitbox();
         add(logoBl);
 
-        dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas('start-menu/doki-freakymenu'));
+        dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas("start-menu/doki-freakymenu"));
         dokiBitch.scale.set(1, 1);
         dokiBitch.updateHitbox();
         dokiBitch.anim.play('doki-freakymenu', true);
         add(dokiBitch);
 
-        var button:FunkinSprite = new FunkinSprite(105, 612).loadTexture("enterbutton");
+        var button:FunkinSprite = new FunkinSprite(799, 627).loadTexture("start-menu/start-button");
         add(button);
 
-        dokiBitch.shader = button.shader =  logoBl.shader = bg.shader = swagShader.shader; //funi Shader
+        dokiBitch.shader = button.shader =  logoBl.shader
+		= bg_6.shader = bg_5.shader = bg_4.shader = bg_3.shader = bg_2.shader = bg_1.shader = bg_0.shader
+		= swagShader.shader; //funi Shader
+		
         skipIntro();
         
         if (FlxG.sound.music != null) FlxG.sound.music.onComplete = moveToAttract;
@@ -125,6 +165,15 @@ class CustomTitle extends MusicBeatState
         if (controls.UI_LEFT) swagShader.update(-elapsed * 0.1);
         if (controls.UI_RIGHT) swagShader.update(elapsed * 0.1);
         super.update(elapsed);
+		
+		var elapsedInverse = elapsed / (1 / 120);
+		
+		bg_1.x -= 0.1 * elapsedInverse;
+		bg_2.x -= 0.15 * elapsedInverse;
+		bg_3.x -= 0.27 * elapsedInverse;
+		bg_4.x -= 0.38 * elapsedInverse;
+		bg_5.x -= 0.5 * elapsedInverse;
+		bg_6.x -= 0.7 * elapsedInverse;
     }
       
     var isRainbow:Bool = false;
