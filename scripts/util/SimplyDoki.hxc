@@ -7,149 +7,136 @@ import funkin.Preferences;
 
 class SimplyDokiModule extends Module
 {
+  var NOTE_STYLE_ID:String = "simply-dokibird";
+  var frameIndices:Array<Int> = [0, 4, 6, 8];
 
-    var NOTE_STYLE_ID:String = "simply-dokibird";
-    var frameIndices:Array<Int> = [0, 4, 6, 8];
+  var actOnPlayer:Bool = false;
+  var actOnOpponent:Bool = false;
 
-    var actOnPlayer:Bool = false;
-    var actOnOpponent:Bool = false;
+  // Y'know, I've always wondered why Funkin' calls these "strumlines". Wtf are you strumming? - Binpuki
+  var playerBarLine:Strumline;
+  var playerHoldCovers:FlxTypedSpriteGroup<NoteHoldCover>;
 
-    // Y'know, I've always wondered why Funkin' calls these "strumlines". Wtf are you strumming? - Binpuki
-    var playerBarLine:Strumline;
-    var playerHoldCovers:FlxTypedSpriteGroup<NoteHoldCover>;
+  var opponentBarLine:Strumline;
+  var opponentHoldCovers:FlxTypedSpriteGroup<NoteHoldCover>;
 
-    var opponentBarLine:Strumline;
-    var opponentHoldCovers:FlxTypedSpriteGroup<NoteHoldCover>;
+  var curIndex:Int = 0;
 
+  var barLineArray:Array<Strumline> = [];
 
-    var curIndex:Int = 0;
+  private function new()
+  {
+    super("SimplyDoki");
+  }
 
-    var barLineArray:Array<Strumline> = [];
+  function updateNote(note:NoteSprite)
+  {
+    if (note == null) return;
 
-	private function new()
-	{
-		super("SimplyDoki");
-	}
+    note.animation.curAnim.curFrame = frameIndices[curIndex];
+  }
 
-    function updateNote(note:NoteSprite)
+  //**I wonder what to point without using refresh cuz it easier lol**/
+
+  override function onSongLoaded(event:SongLoadScriptEvent)
+  {
+    super.onSongLoaded(event);
+
+    var game = PlayState.instance;
+    if (game == null) return;
+
+    actOnPlayer = game.playerStrumline.noteStyle.id == NOTE_STYLE_ID;
+    actOnOpponent = game.opponentStrumline.noteStyle.id == NOTE_STYLE_ID;
+
+    if (actOnPlayer)
     {
-        if (note == null)
-            return;
+      playerBarLine = game.playerStrumline;
+      playerBarLine.holdNotes.alpha = 0.6;
+      playerBarLine.holdNotes.zIndex = playerBarLine.strumlineNotes.zIndex - 1;
+      playerBarLine.holdNotesVwoosh.zIndex = playerBarLine.holdNotes.zIndex;
+      playerBarLine.noteHoldCovers.zIndex = playerBarLine.holdNotes.zIndex;
+      playerBarLine.refresh();
 
-        note.animation.curAnim.curFrame = frameIndices[curIndex];
-    }
-    
-    //**I wonder what to point without using refresh cuz it easier lol**/
-    
-    override function onSongLoaded(event:SongLoadScriptEvent)
-    {
-        super.onSongLoaded(event);
+      playerHoldCovers = playerBarLine.noteHoldCovers;
 
-        var game = PlayState.instance;
-        if (game == null)
-            return;
-        
-        actOnPlayer = game.playerStrumline.noteStyle.id == NOTE_STYLE_ID;
-        actOnOpponent = game.opponentStrumline.noteStyle.id == NOTE_STYLE_ID;
-
-        if (actOnPlayer)
-        {
-            playerBarLine = game.playerStrumline;
-            playerBarLine.holdNotes.alpha = 0.6;
-            playerBarLine.holdNotes.zIndex = playerBarLine.strumlineNotes.zIndex - 1;
-            playerBarLine.holdNotesVwoosh.zIndex = playerBarLine.holdNotes.zIndex;
-            playerBarLine.noteHoldCovers.zIndex = playerBarLine.holdNotes.zIndex;
-            playerBarLine.refresh();
-
-            playerHoldCovers = playerBarLine.noteHoldCovers;
-
-            if(Preferences.downscroll) playerBarLine.noteStyle.getHoldCoverOffsets()[1] = 50;
-                
-        }
-        
-        if (actOnOpponent)
-        {
-            opponentBarLine = game.opponentStrumline;
-            opponentBarLine.holdNotes.alpha = 0.6;
-            opponentBarLine.holdNotes.zIndex = opponentBarLine.strumlineNotes.zIndex - 1;
-            opponentBarLine.holdNotesVwoosh.zIndex = opponentBarLine.holdNotes.zIndex;
-            opponentBarLine.noteHoldCovers.zIndex = opponentBarLine.holdNotes.zIndex;
-            opponentBarLine.refresh();
-
-            opponentHoldCovers = opponentBarLine.noteHoldCovers;
-
-            if(Preferences.downscroll) opponentBarLine.noteStyle.getHoldCoverOffsets()[1] = 50;
-        }
-    }
-    
-
-    override function onUpdate(event:UpdateScriptEvent)
-    {
-        super.onUpdate(event);
-
-        var game = PlayState.instance;
-        if (game == null)
-            return;
-
-        if (actOnPlayer)
-        {
-            if (playerHoldCovers != null)
-                for (member in playerHoldCovers.members)
-                    updateHoldCover(member);
-        }
-
-        if (actOnOpponent)
-        {
-            if (opponentHoldCovers != null)
-                for (member in opponentHoldCovers.members)
-                    updateHoldCover(member);
-        }
+      if (Preferences.downscroll) playerBarLine.noteStyle.getHoldCoverOffsets()[1] = 50;
     }
 
-    override function onStepHit(event:SongTimeScriptEvent) 
+    if (actOnOpponent)
     {
-        super.onStepHit(event);
+      opponentBarLine = game.opponentStrumline;
+      opponentBarLine.holdNotes.alpha = 0.6;
+      opponentBarLine.holdNotes.zIndex = opponentBarLine.strumlineNotes.zIndex - 1;
+      opponentBarLine.holdNotesVwoosh.zIndex = opponentBarLine.holdNotes.zIndex;
+      opponentBarLine.noteHoldCovers.zIndex = opponentBarLine.holdNotes.zIndex;
+      opponentBarLine.refresh();
 
-        var game = PlayState.instance;
-        if (game == null)
-            return;
+      opponentHoldCovers = opponentBarLine.noteHoldCovers;
 
-        if (!actOnPlayer && !actOnOpponent)
-            return;
+      if (Preferences.downscroll) opponentBarLine.noteStyle.getHoldCoverOffsets()[1] = 50;
+    }
+  }
 
-        // Get frame to set to
-        curIndex = event.step % 4;
+  override function onUpdate(event:UpdateScriptEvent)
+  {
+    super.onUpdate(event);
 
-        barLineArray = [];
-        if (actOnPlayer)
-            barLineArray.push(playerBarLine);
-        
-        if (actOnOpponent)
-            barLineArray.push(opponentBarLine);
-        
-        for (i in 0...barLineArray.length)
-        {
-            var curBarLine = barLineArray[i];
-            var renderedNotes = curBarLine.notes.members;
-			if (renderedNotes != null)
-			{
-				for (j in 0...renderedNotes.length)
-					updateNote(renderedNotes[j]);
-			}
-        }
+    var game = PlayState.instance;
+    if (game == null) return;
+
+    if (actOnPlayer)
+    {
+      if (playerHoldCovers != null) for (member in playerHoldCovers.members)
+        updateHoldCover(member);
     }
 
-    override function onNoteIncoming(event:NoteScriptEvent)
+    if (actOnOpponent)
     {
-        updateNote(event.note);
+      if (opponentHoldCovers != null) for (member in opponentHoldCovers.members)
+        updateHoldCover(member);
     }
+  }
 
-    function updateHoldCover(holdCover:NoteHoldCover)
+  override function onStepHit(event:SongTimeScriptEvent)
+  {
+    super.onStepHit(event);
+
+    var game = PlayState.instance;
+    if (game == null) return;
+
+    if (!actOnPlayer && !actOnOpponent) return;
+
+    // Get frame to set to
+    curIndex = event.step % 4;
+
+    barLineArray = [];
+    if (actOnPlayer) barLineArray.push(playerBarLine);
+
+    if (actOnOpponent) barLineArray.push(opponentBarLine);
+
+    for (i in 0...barLineArray.length)
     {
-        if (holdCover == null) return;
-
-        var glow = holdCover.glow;
-
-        glow.flipY = Preferences.downscroll;
+      var curBarLine = barLineArray[i];
+      var renderedNotes = curBarLine.notes.members;
+      if (renderedNotes != null)
+      {
+        for (j in 0...renderedNotes.length)
+          updateNote(renderedNotes[j]);
+      }
     }
+  }
+
+  override function onNoteIncoming(event:NoteScriptEvent)
+  {
+    updateNote(event.note);
+  }
+
+  function updateHoldCover(holdCover:NoteHoldCover)
+  {
+    if (holdCover == null) return;
+
+    var glow = holdCover.glow;
+
+    glow.flipY = Preferences.downscroll;
+  }
 }

@@ -10,7 +10,7 @@ class FunniNumber extends ScriptedFlxSpriteGroup
   public function new()
   {
     // FunkinSprite.cacheSparrow("scorenums");
-	FunkinMemory.cacheTexture(Paths.image("scorenums"));
+    FunkinMemory.cacheTexture(Paths.image("scorenums"));
     super();
   }
 
@@ -18,22 +18,22 @@ class FunniNumber extends ScriptedFlxSpriteGroup
   {
     if (text == prevText) return;
     prevText = text;
-	
-	//Adds commas
-	var textConverted:String = "";
-	var commaCounter:Int = 0;
-	for (i in 0...text.length)
-	{
-	  var currentChar = text.charAt(text.length - 1 - i);
-	  commaCounter = commaCounter + 1;
-	  if (commaCounter >= 4 && currentChar != "-")
-	  {
-		commaCounter = 0;
-		textConverted = "," + textConverted;
-	  }
-	  textConverted = currentChar + textConverted;
-	}
-	
+
+    // Adds commas
+    var textConverted:String = "";
+    var commaCounter:Int = 0;
+    for (i in 0...text.length)
+    {
+      var currentChar = text.charAt(text.length - 1 - i);
+      commaCounter = commaCounter + 1;
+      if (commaCounter >= 4 && currentChar != "-")
+      {
+        commaCounter = 0;
+        textConverted = "," + textConverted;
+      }
+      textConverted = currentChar + textConverted;
+    }
+
     for (i in 0...textConverted.length)
     {
       if (nums.length <= i) addDigit();

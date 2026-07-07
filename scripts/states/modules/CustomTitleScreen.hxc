@@ -1,5 +1,3 @@
-
-
 import funkin.modding.events.StateChangeScriptEvent;
 import flixel.addons.transition.FlxTransitionableState;
 import funkin.modding.module.Module;

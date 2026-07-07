@@ -136,8 +136,6 @@ class CustomMainMenu extends ScriptedMusicBeatState
         freeplay = null;
       }
     }
-	
-	
   }
 
   override function update(elapsed:Float):Void
@@ -154,11 +152,11 @@ class CustomMainMenu extends ScriptedMusicBeatState
 
   function doControl()
   {
-	if (confirming)
+    if (confirming)
     {
       return;
     }
-  
+
     if (controls.UI_UP_P) changeItem(-1);
 
     if (controls.UI_DOWN_P) changeItem(1);
@@ -178,27 +176,39 @@ class CustomMainMenu extends ScriptedMusicBeatState
 
     if (controls.ACCEPT)
     {
-	  confirming = true;
+      confirming = true;
       FunkinSound.playOnce(Paths.sound('confirmMenu'));
       switch (optionShit[curSelected])
       {
         case 'story':
-          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(new StoryMenuState()); } );
+          new FlxTimer().start(0.4, function(_) {
+            confirming = false;
+            FlxG.switchState(new StoryMenuState());
+          });
 
         case 'freeplay':
           persistentDraw = true;
           persistentUpdate = false;
           FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-          new FlxTimer().start(0.4, function(_) { confirming = false; openSubState(new FreeplayState()); } );
+          new FlxTimer().start(0.4, function(_) {
+            confirming = false;
+            openSubState(new FreeplayState());
+          });
         case 'merch':
-		  WindowUtil.openURL('https://dokimerch.com/');
-		  confirming = false;
+          WindowUtil.openURL('https://dokimerch.com/');
+          confirming = false;
           // WindowUtil.openURL(Constants.URL_MERCH);
           return; // maybe skip animating here???
         case 'options':
-          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(new OptionsState()); } );
+          new FlxTimer().start(0.4, function(_) {
+            confirming = false;
+            FlxG.switchState(new OptionsState());
+          });
         case 'credits':
-          new FlxTimer().start(0.4, function(_) { confirming = false; FlxG.switchState(ScriptedMusicBeatState.init("PsychCredits")); } );
+          new FlxTimer().start(0.4, function(_) {
+            confirming = false;
+            FlxG.switchState(ScriptedMusicBeatState.init("PsychCredits"));
+          });
       }
 
       for (i in 0...menuItems.members.length)

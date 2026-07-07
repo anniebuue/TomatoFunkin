@@ -17,185 +17,186 @@ import StringTools;
 
 class CustomTitle extends MusicBeatState
 {
-    public function new()
+  public function new()
+  {
+    super();
+  }
+
+  var initialized:Bool = false;
+  var swagShader:ColorSwap;
+
+  override function create()
+  {
+    super.create();
+    swagShader = new ColorSwap();
+
+    startIntro();
+  }
+
+  var bg_1:FlxBackdrop;
+  var bg_2:FlxBackdrop;
+  var bg_3:FlxBackdrop;
+  var bg_4:FlxBackdrop;
+  var bg_5:FlxBackdrop;
+  var bg_6:FlxBackdrop;
+
+  var logoBl:FunkinSprite;
+  var dokiBitch:FlxAtlasSprite;
+
+  function startIntro():Void
+  {
+    playMenuMusic();
+
+    var bg_0:FunkinSprite = new FunkinSprite(0, 0).loadTexture("start-menu/bg");
+    bg_0.screenCenter();
+    add(bg_0);
+
+    bg_1 = new FlxBackdrop(Paths.image("start-menu/cloud-2"), 0x01, 0, 0);
+    bg_1.y = 120;
+    bg_1.blend = BlendMode.ADD;
+    add(bg_1);
+
+    bg_2 = new FlxBackdrop(Paths.image("start-menu/cloud-1"), 0x01, 0, 0);
+    bg_2.y = -142;
+    bg_2.blend = BlendMode.ADD;
+    add(bg_2);
+
+    bg_3 = new FlxBackdrop(Paths.image("start-menu/buildings-2"), 0x01, 0, 0);
+    bg_3.y = 227;
+    add(bg_3);
+
+    bg_4 = new FlxBackdrop(Paths.image("start-menu/fog-2"), 0x01, 0, 0);
+    bg_4.y = 452;
+    bg_4.blend = BlendMode.ADD;
+    add(bg_4);
+
+    bg_5 = new FlxBackdrop(Paths.image("start-menu/buildings-1"), 0x01, 0, 0);
+    bg_5.y = 165;
+    add(bg_5);
+
+    bg_6 = new FlxBackdrop(Paths.image("start-menu/fog-1"), 0x01, 0, 0);
+    bg_6.y = 499;
+    bg_6.blend = BlendMode.ADD;
+    add(bg_6);
+
+    logoBl = FunkinSprite.createSparrow(670, 18, "doki-LogoBumpin");
+    logoBl.animation.addByPrefix('bump', 'doki-logoBumpin-2', 24);
+    logoBl.animation.play('bump');
+    logoBl.setGraphicSize(Std.int(logoBl.width * 1));
+    logoBl.updateHitbox();
+    add(logoBl);
+
+    dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas("start-menu/doki-freakymenu"));
+    dokiBitch.scale.set(1, 1);
+    dokiBitch.updateHitbox();
+    dokiBitch.anim.play('doki-freakymenu', true);
+    add(dokiBitch);
+
+    var button:FunkinSprite = new FunkinSprite(799, 627).loadTexture("start-menu/start-button");
+    add(button);
+
+    dokiBitch.shader = button.shader = logoBl.shader = bg_6.shader = bg_5.shader = bg_4.shader = bg_3.shader = bg_2.shader = bg_1.shader = bg_0.shader = swagShader.shader; // funi Shader
+
+    skipIntro();
+
+    if (FlxG.sound.music != null) FlxG.sound.music.onComplete = moveToAttract;
+  }
+
+  function moveToAttract():Void
+  {
+    FlxG.switchState(() -> new AttractState());
+  }
+
+  function playMenuMusic():Void
+  {
+    var shouldFadeIn:Bool = (FlxG.sound.music == null);
+    // Load music. Includes logic to handle BPM changes.
+    FunkinSound.playMusic('freakyMenu',
+      {
+        startingVolume: 0.0,
+        overrideExisting: true,
+        restartTrack: false
+      });
+    // Fade from 0.0 to 1 over 4 seconds
+    if (shouldFadeIn) FlxG.sound.music.fadeIn(4.0, 0.0, 1.0);
+  }
+
+  var transitioning:Bool = false;
+
+  override function update(elapsed:Float):Void
+  {
+    if (FlxG.camera.buffer != null) FlxG.bitmapLog.add(FlxG.camera.buffer);
+
+    if (FlxG.keys.pressed.UP) FlxG.sound.music.pitch += 0.5 * elapsed;
+    if (FlxG.keys.pressed.DOWN) FlxG.sound.music.pitch -= 0.5 * elapsed;
+
+    Conductor.instance.update();
+
+    if (FlxG.keys.justPressed.Y)
     {
-        super();
+      FlxTween.cancelTweensOf(FlxG.stage.window, ['x', 'y']);
+      FlxTween.tween(FlxG.stage.window, {x: FlxG.stage.window.x + 300}, 1.4, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.35});
+      FlxTween.tween(FlxG.stage.window, {y: FlxG.stage.window.y + 100}, 0.7, {ease: FlxEase.quadInOut, type: PINGPONG});
     }
 
-    var initialized:Bool = false;
-    var swagShader:ColorSwap;
-    override function create() 
+    if (FlxG.sound.music != null) Conductor.instance.update(FlxG.sound.music.time);
+
+    // do controls.PAUSE | controls.ACCEPT instead?
+    var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+
+    if (pressedEnter && transitioning && skippedIntro)
     {
-        super.create();
-        swagShader = new ColorSwap();
-
-        startIntro();
-    }
-	
-    var bg_1:FlxBackdrop;
-    var bg_2:FlxBackdrop;
-    var bg_3:FlxBackdrop;
-    var bg_4:FlxBackdrop;
-    var bg_5:FlxBackdrop;
-    var bg_6:FlxBackdrop;
-
-    var logoBl:FunkinSprite;
-    var dokiBitch:FlxAtlasSprite;
-    function startIntro():Void
-    {
-        playMenuMusic();
-
-        var bg_0:FunkinSprite = new FunkinSprite(0, 0).loadTexture("start-menu/bg");
-        bg_0.screenCenter();
-        add(bg_0);
-		
-		bg_1 = new FlxBackdrop(Paths.image("start-menu/cloud-2"), 0x01, 0, 0);
-		bg_1.y = 120;
-		bg_1.blend = BlendMode.ADD;
-        add(bg_1);
-		
-		bg_2 = new FlxBackdrop(Paths.image("start-menu/cloud-1"), 0x01, 0, 0);
-		bg_2.y = -142;
-		bg_2.blend = BlendMode.ADD;
-        add(bg_2);
-		
-		bg_3 = new FlxBackdrop(Paths.image("start-menu/buildings-2"), 0x01, 0, 0);
-		bg_3.y = 227;
-        add(bg_3);
-		
-		bg_4 = new FlxBackdrop(Paths.image("start-menu/fog-2"), 0x01, 0, 0);
-		bg_4.y = 452;
-		bg_4.blend = BlendMode.ADD;
-        add(bg_4);
-		
-		bg_5 = new FlxBackdrop(Paths.image("start-menu/buildings-1"), 0x01, 0, 0);
-		bg_5.y = 165;
-        add(bg_5);
-		
-		bg_6 = new FlxBackdrop(Paths.image("start-menu/fog-1"), 0x01, 0, 0);
-		bg_6.y = 499;
-		bg_6.blend = BlendMode.ADD;
-        add(bg_6);
-
-        logoBl = FunkinSprite.createSparrow(670, 18, "doki-LogoBumpin");
-        logoBl.animation.addByPrefix('bump', 'doki-logoBumpin-2', 24);
-        logoBl.animation.play('bump');
-        logoBl.setGraphicSize(Std.int(logoBl.width * 1));
-        logoBl.updateHitbox();
-        add(logoBl);
-
-        dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas("start-menu/doki-freakymenu"));
-        dokiBitch.scale.set(1, 1);
-        dokiBitch.updateHitbox();
-        dokiBitch.anim.play('doki-freakymenu', true);
-        add(dokiBitch);
-
-        var button:FunkinSprite = new FunkinSprite(799, 627).loadTexture("start-menu/start-button");
-        add(button);
-
-        dokiBitch.shader = button.shader =  logoBl.shader
-		= bg_6.shader = bg_5.shader = bg_4.shader = bg_3.shader = bg_2.shader = bg_1.shader = bg_0.shader
-		= swagShader.shader; //funi Shader
-		
-        skipIntro();
-        
-        if (FlxG.sound.music != null) FlxG.sound.music.onComplete = moveToAttract;
+      FlxG.switchState(() -> new MainMenuState());
     }
 
-    function moveToAttract():Void
+    if (pressedEnter && !transitioning && skippedIntro)
     {
-        FlxG.switchState(() -> new AttractState());
+      if (FlxG.sound.music != null) FlxG.sound.music.onComplete = null;
+
+      FlxG.camera.flash(0xFFFFFFFF, 1);
+      FunkinSound.playOnce(Paths.sound('confirmMenu'), 0.7);
+      transitioning = true;
+      new FlxTimer().start(2, function(tmr:FlxTimer) {
+        FlxG.switchState(new MainMenuState());
+      });
     }
 
-    function playMenuMusic():Void
+    if (pressedEnter && !skippedIntro && initialized) skipIntro();
+
+    if (controls.UI_LEFT) swagShader.update(-elapsed * 0.1);
+    if (controls.UI_RIGHT) swagShader.update(elapsed * 0.1);
+    super.update(elapsed);
+
+    var elapsedInverse = elapsed / (1 / 120);
+
+    bg_1.x -= 0.1 * elapsedInverse;
+    bg_2.x -= 0.15 * elapsedInverse;
+    bg_3.x -= 0.27 * elapsedInverse;
+    bg_4.x -= 0.38 * elapsedInverse;
+    bg_5.x -= 0.5 * elapsedInverse;
+    bg_6.x -= 0.7 * elapsedInverse;
+  }
+
+  var isRainbow:Bool = false;
+  var skippedIntro:Bool = false;
+
+  override function beatHit():Bool
+  {
+    super.beatHit();
+
+    if (skippedIntro)
     {
-        var shouldFadeIn:Bool = (FlxG.sound.music == null);
-          // Load music. Includes logic to handle BPM changes.
-        FunkinSound.playMusic('freakyMenu',
-        {
-            startingVolume: 0.0,
-            overrideExisting: true,
-            restartTrack: false
-        });
-          // Fade from 0.0 to 1 over 4 seconds
-        if (shouldFadeIn) FlxG.sound.music.fadeIn(4.0, 0.0, 1.0);
+      if (logoBl != null && logoBl.animation != null) logoBl.animation.play('bump', true);
+      if (dokiBitch != null && dokiBitch.anim != null) dokiBitch.anim.play('doki-freakymenu', true);
     }
-    var transitioning:Bool = false;
+  }
 
-    override function update(elapsed:Float):Void
+  function skipIntro():Void
+  {
+    if (!skippedIntro)
     {
-        if (FlxG.camera.buffer != null) FlxG.bitmapLog.add(FlxG.camera.buffer);
-
-        if (FlxG.keys.pressed.UP) FlxG.sound.music.pitch += 0.5 * elapsed;
-        if (FlxG.keys.pressed.DOWN) FlxG.sound.music.pitch -= 0.5 * elapsed;
-    
-        Conductor.instance.update();
-
-        if (FlxG.keys.justPressed.Y)
-        {
-            FlxTween.cancelTweensOf(FlxG.stage.window, ['x', 'y']);
-            FlxTween.tween(FlxG.stage.window, {x: FlxG.stage.window.x + 300}, 1.4, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.35});
-            FlxTween.tween(FlxG.stage.window, {y: FlxG.stage.window.y + 100}, 0.7, {ease: FlxEase.quadInOut, type: PINGPONG});
-        }
-
-        if (FlxG.sound.music != null) Conductor.instance.update(FlxG.sound.music.time);
-
-        // do controls.PAUSE | controls.ACCEPT instead?
-        var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
-
-        if (pressedEnter && transitioning && skippedIntro)
-        {
-            FlxG.switchState(() -> new MainMenuState());
-        }
-
-        if (pressedEnter && !transitioning && skippedIntro)
-        {
-            if (FlxG.sound.music != null) FlxG.sound.music.onComplete = null;
-
-            FlxG.camera.flash(0xFFFFFFFF, 1);
-            FunkinSound.playOnce(Paths.sound('confirmMenu'), 0.7);
-            transitioning = true;
-            new FlxTimer().start(2, function(tmr:FlxTimer) {
-                FlxG.switchState(new MainMenuState());
-            });
-        }
-
-        if (pressedEnter && !skippedIntro && initialized) skipIntro();
-
-        if (controls.UI_LEFT) swagShader.update(-elapsed * 0.1);
-        if (controls.UI_RIGHT) swagShader.update(elapsed * 0.1);
-        super.update(elapsed);
-		
-		var elapsedInverse = elapsed / (1 / 120);
-		
-		bg_1.x -= 0.1 * elapsedInverse;
-		bg_2.x -= 0.15 * elapsedInverse;
-		bg_3.x -= 0.27 * elapsedInverse;
-		bg_4.x -= 0.38 * elapsedInverse;
-		bg_5.x -= 0.5 * elapsedInverse;
-		bg_6.x -= 0.7 * elapsedInverse;
+      FlxG.camera.flash(0xFFFFFFFF, initialized ? 0 : 1);
+      skippedIntro = true;
     }
-      
-    var isRainbow:Bool = false;
-    var skippedIntro:Bool = false;
-
-    override function beatHit():Bool
-    {
-        super.beatHit();
-        
-        if (skippedIntro)
-        {
-            if (logoBl != null && logoBl.animation != null) logoBl.animation.play('bump', true);
-            if (dokiBitch != null && dokiBitch.anim != null) dokiBitch.anim.play('doki-freakymenu', true);
-        }
-    }
-
-    function skipIntro():Void
-    {
-        if (!skippedIntro)
-        {
-            FlxG.camera.flash(0xFFFFFFFF, initialized ? 0 : 1);
-            skippedIntro = true;
-        }
-    }
+  }
 }
