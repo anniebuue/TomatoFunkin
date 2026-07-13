@@ -28,7 +28,7 @@ class FunniNumber extends ScriptedFlxSpriteGroup
       commaCounter = commaCounter + 1;
       if (commaCounter >= 4 && currentChar != "-")
       {
-        commaCounter = 0;
+        commaCounter = 1;
         textConverted = "," + textConverted;
       }
       textConverted = currentChar + textConverted;

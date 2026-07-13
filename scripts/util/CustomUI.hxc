@@ -99,7 +99,7 @@ class CustomUI extends Module
     rankSprite.centerOrigin();
     rankSprite.scale.set(0.7, 0.7);
     rankSprite.cameras = [game.camHUD];
-    for (ranky in ['perfect-gold', 'perfect', 'excellent', 'great', 'good', 'lose'])
+    for (ranky in ['perfect-gold', 'perfect-normal', 'excellent', 'great', 'good', 'lose'])
       rankSprite.animation.addByPrefix(ranky, "rank-" + ranky, 24, true);
     rankSprite.animation.play("perfect-gold", true);
     game.add(rankSprite);
@@ -147,8 +147,14 @@ class CustomUI extends Module
     var game = PlayState.instance;
 
     if (game.isBotPlayMode) return;
-
-    scoreTxt.scriptCall("displayText", [Std.string(Std.int(game.songScore)), true]);
+    
+    var scoreString:String = Std.string(Std.int(game.songScore));
+    var scoreLengthMargin:Float = 44.0 * Std.parseFloat(Std.string(Math.max(0, scoreString.length - 4)));
+    
+    scoreSprite.x = 401 - scoreLengthMargin;
+    scoreTxt.x = 548 - scoreLengthMargin;
+    
+    scoreTxt.scriptCall("displayText", [scoreString, true]);
     missedText.scriptCall("displayText", [Std.string(scuffs), false]);
   }
 
@@ -209,7 +215,7 @@ class CustomUI extends Module
     {
       if (grade == Constants.RANK_PERFECT_THRESHOLD)
       {
-        rankSprite.animation.play('perfect', false, false, 0);
+        rankSprite.animation.play('perfect-normal', false, false, 0);
       }
       else if (grade >= Constants.RANK_EXCELLENT_THRESHOLD)
       {

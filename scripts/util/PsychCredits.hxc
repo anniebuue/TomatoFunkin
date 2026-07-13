@@ -5,6 +5,7 @@ import funkin.modding.base.ScriptedFunkinSprite;
 import funkin.modding.base.ScriptedMusicBeatSubState;
 import funkin.graphics.FunkinSprite;
 import funkin.ui.AtlasText;
+import funkin.ui.mainmenu.MainMenuState;
 import flixel.math.FlxMath;
 import flixel.FlxG;
 import flixel.text.FlxText;
@@ -281,7 +282,7 @@ class PsychCredits extends ScriptedMusicBeatState
       quitting = true;
       new FlxTimer().start(0.4, function(_) {
         quitting = false;
-        FlxG.switchState(() -> ScriptedMusicBeatState.init("CustomMainMenu"));
+        FlxG.switchState(() -> new MainMenuState());
       });
     }
   }

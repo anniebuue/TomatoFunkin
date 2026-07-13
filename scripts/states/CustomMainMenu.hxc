@@ -7,6 +7,7 @@ import funkin.modding.base.ScriptedFlxSpriteGroup;
 import flixel.group.FlxTypedSpriteGroup;
 import flixel.FlxObject;
 import funkin.graphics.FunkinCamera;
+import funkin.graphics.adobeanimate.FlxAtlasSprite;
 import funkin.audio.FunkinSound;
 import flixel.addons.transition.FlxTransitionableState;
 import funkin.util.Constants;
@@ -19,11 +20,14 @@ import funkin.ui.debug.DebugMenuSubState;
 import funkin.graphics.FunkinSprite;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
+import funkin.util.ReflectUtil;
 import flixel.tweens.FlxTween;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
+import flixel.addons.display.FlxRuntimeShader;
+import balphabet.BAlphabet;
 import StringTools;
 
 class CustomMainMenu extends ScriptedMusicBeatState
@@ -31,12 +35,33 @@ class CustomMainMenu extends ScriptedMusicBeatState
   // this holds freeplay state (if there's a one to display over menu that is)
   var freeplay:FreeplayState;
 
+  var hasSelectedCustomStory:Bool = false;
+
   var checker:FlxBackdrop;
   var menuItems:FlxTypedSpriteGroup;
   var curSelected:Int = 0;
   var theBarThing:FunkinSprite;
   var theBarThing2:FunkinSprite;
   var funiPoster:FunkinSprite;
+  
+  var preventEsc:Bool = true;
+
+  var storyselectOverlay:FunkinSprite;
+  var storyselectHeader:FunkinSprite;
+  var storyselectButtonCustom:FunkinSprite;
+  var storyselectButtonVanilla:FunkinSprite;
+  var storyselectLock:FlxAtlasSprite;
+  var storyselectLockString:String;
+  var storyselectLockText:BAlphabet;
+  var isStorySelectOpen:Bool = false;
+  var curSelectedStorySelect:Int = 0;
+  
+  var isStorySelectUnlocked:Bool = false;
+  var hasUnlockAnimationPlayed:Bool = false;
+  
+  var isPlayingUnlockAnimation:Bool = false;
+  var playingUnlockAnimationTimer:Float = 0.0;
+  
   var camHUD:FlxCamera;
   var optionShit:Array<String> = ['story', 'freeplay', 'merch', 'credits', 'options'];
   var confirming:Bool = false;
@@ -136,6 +161,66 @@ class CustomMainMenu extends ScriptedMusicBeatState
         freeplay = null;
       }
     }
+
+    curSelectedStorySelect = isStorySelectUnlocked ? 0 : 1;
+
+    storyselectOverlay = new FunkinSprite(0, 0);
+    storyselectOverlay.makeGraphic(1280, 720, 0xFF000000);
+    storyselectOverlay.alpha = 0.8; //0.8
+    storyselectOverlay.screenCenter();
+    storyselectOverlay.updateHitbox();
+    storyselectOverlay.scrollFactor.set();
+    storyselectOverlay.alpha = 0.0;
+    add(storyselectOverlay);
+
+    storyselectHeader = new FunkinSprite(0, 0).loadTexture("story-select/story-select-text");
+    storyselectHeader.screenCenter();
+    storyselectHeader.y = 29;
+    storyselectHeader.updateHitbox();
+    storyselectHeader.scrollFactor.set();
+    storyselectHeader.alpha = 0.0;
+    add(storyselectHeader);
+
+    storyselectButtonCustom = new FunkinSprite(0, 0).loadTexture("story-select/storybutt-dokifunk");
+    storyselectButtonCustom.screenCenter();
+    storyselectButtonCustom.y -= 85;
+    storyselectButtonCustom.updateHitbox();
+    storyselectButtonCustom.scrollFactor.set();
+    storyselectButtonCustom.shader = new FlxRuntimeShader(Assets.getText(Paths.frag('CustomStorySelectButtonShader')));
+    storyselectButtonCustom.shader.setFloat("isSelected", (curSelectedStorySelect == 0) ? 1.0 : 0.0);
+    storyselectButtonCustom.shader.setFloat("isLocked", hasUnlockAnimationPlayed ? 0.0 : 1.0);
+    storyselectButtonCustom.alpha = 0.0;
+    add(storyselectButtonCustom);
+
+    storyselectButtonVanilla = new FunkinSprite(0, 0).loadTexture("story-select/storybutt-vanilla");
+    storyselectButtonVanilla.screenCenter();
+    storyselectButtonVanilla.y += 198;
+    storyselectButtonVanilla.updateHitbox();
+    storyselectButtonVanilla.scrollFactor.set();
+    storyselectButtonVanilla.shader = new FlxRuntimeShader(Assets.getText(Paths.frag('CustomStorySelectButtonShader')));
+    storyselectButtonVanilla.shader.setFloat("isSelected", (curSelectedStorySelect == 1) ? 1.0 : 0.0);
+    storyselectButtonVanilla.shader.setFloat("isLocked", 0.0);
+    storyselectButtonVanilla.alpha = 0.0;
+    add(storyselectButtonVanilla);
+
+    storyselectLock = new FlxAtlasSprite(-500, -290, Paths.animateAtlas("story-select/lock-dokifunk"));
+    storyselectLock.scale.set(2.4, 2.4);
+    storyselectLock.updateHitbox();
+    storyselectLock.anim.play('lock-unselect', true);
+    storyselectLock.alpha = 0.0;
+    add(storyselectLock);
+
+    storyselectLockString = "Complete the vanilla game's\nStory Mode to unlock\n(including WeekEnd 1)";
+
+    storyselectLockText = new BAlphabet(-140, -160, storyselectLockString);
+    storyselectLockText.scale.set(0.63, 0.7);
+    storyselectLockText.text = "";
+    add(storyselectLockText);
+
+    new FlxTimer().start(0.4, function(_) {
+      preventEsc = false;
+    });
+
   }
 
   override function update(elapsed:Float):Void
@@ -145,9 +230,78 @@ class CustomMainMenu extends ScriptedMusicBeatState
     checker.x += 0.5 * (elapsed / (1 / 120));
     checker.y -= 0.16 / 144;
 
+    if (isPlayingUnlockAnimation)
+    {
+      playingUnlockAnimationTimer = Math.max(0.0, playingUnlockAnimationTimer - elapsed);
+      storyselectButtonCustom.shader.setFloat("isLocked", Math.min(1.0, playingUnlockAnimationTimer / 0.5));
+      if (playingUnlockAnimationTimer <= Math.EPSILON) isPlayingUnlockAnimation = false;
+    }
+
     if (FlxG.sound.music != null && FlxG.sound.music.volume < 0.8) FlxG.sound.music.volume += 0.5 * elapsed;
 
-    doControl();
+    if (isStorySelectOpen) doControl_StorySelect();
+    else doControl();
+  }
+
+  function doControl_StorySelect()
+  {
+    if (confirming)
+    {
+      return;
+    }
+
+    if (controls.UI_UP_P || controls.UI_DOWN_P) changeItem_StorySelect();
+
+    if (controls.BACK)
+    {
+      confirming = true;
+      FunkinSound.playOnce(Paths.sound('cancelMenu'));
+      toggleStorySelectMenuVisuals(false);
+      new FlxTimer().start(0.4, function(_) {
+        confirming = false;
+        isStorySelectOpen = false;
+      });
+      for (i in 0...menuItems.members.length)
+      {
+        if (i == curSelected) continue;
+        FlxTween.tween(menuItems.members[i], {alpha: 1.0}, 0.4,
+          {
+            ease: FlxEase.quadOut,
+            onComplete: function(twn:FlxTween) {
+            }
+          });
+      }
+    }
+
+    if (controls.ACCEPT)
+    {
+      confirming = true;
+      FunkinSound.playOnce(Paths.sound('confirmMenu'));
+      switch (curSelectedStorySelect)
+      {
+        case 0:
+          storyselectLock.anim.play('lock-anim');
+          if (isStorySelectUnlocked)
+          {
+            hasSelectedCustomStory = true;
+            new FlxTimer().start(0.46, function(_) {
+              confirming = false;
+              FlxG.switchState(new DokiStoryMenuState());
+            });
+          }
+          else
+          {
+            new FlxTimer().start(0.46, function(_) {
+              confirming = false;
+            });
+          }
+        case 1:
+          new FlxTimer().start(0.46, function(_) {
+            confirming = false;
+            FlxG.switchState(new StoryMenuState());
+          });
+      }
+    }
   }
 
   function doControl()
@@ -168,7 +322,7 @@ class CustomMainMenu extends ScriptedMusicBeatState
       openSubState(new DebugMenuSubState());
     }
 
-    if (controls.BACK)
+    if (controls.BACK && !preventEsc)
     {
       FunkinSound.playOnce(Paths.sound('cancelMenu'));
       FlxG.switchState(new TitleState());
@@ -183,8 +337,34 @@ class CustomMainMenu extends ScriptedMusicBeatState
         case 'story':
           new FlxTimer().start(0.4, function(_) {
             confirming = false;
-            FlxG.switchState(new StoryMenuState());
+            isStorySelectOpen = true;
+            toggleStorySelectMenuVisuals(true);
+            if (isStorySelectUnlocked && !hasUnlockAnimationPlayed)
+            {
+              confirming = true;
+              hasUnlockAnimationPlayed = true;
+              storyselectLock.anim.play('unlock-anim');
+              var animDuration:Float = 64.0 / 24.0;
+              isPlayingUnlockAnimation = true;
+              playingUnlockAnimationTimer = animDuration;
+              new FlxTimer().start(animDuration, function(_) {
+                confirming = false;
+                storyselectLock.alpha = 0.0;
+              });
+            }
           });
+          for (i in 0...menuItems.members.length)
+          {
+            if (i == curSelected) continue;
+            FlxTween.tween(menuItems.members[i], {alpha: 0}, 0.4,
+              {
+                ease: FlxEase.quadOut,
+                onComplete: function(twn:FlxTween) {
+                  
+                }
+              });
+          }
+          return;
 
         case 'freeplay':
           persistentDraw = true;
@@ -225,6 +405,27 @@ class CustomMainMenu extends ScriptedMusicBeatState
     }
   }
 
+  function changeItem_StorySelect()
+  {
+    FunkinSound.playOnce(Paths.sound('scrollMenu'));
+	
+    if (curSelectedStorySelect == 0)
+    {
+      storyselectButtonCustom.shader.setFloat("isSelected", 0.0);
+      storyselectButtonVanilla.shader.setFloat("isSelected", 1.0);
+      curSelectedStorySelect = 1;
+      storyselectLock.anim.play('lock-unselect', true);
+    }
+    else if (curSelectedStorySelect == 1)
+    {
+      storyselectButtonCustom.shader.setFloat("isSelected", 1.0);
+      storyselectButtonVanilla.shader.setFloat("isSelected", 0.0);
+      curSelectedStorySelect = 0;
+      storyselectLock.anim.play('lock-selected', true);
+    }
+	
+  }
+
   function changeItem(huh:Int = 0)
   {
     if (huh != 0) FunkinSound.playOnce(Paths.sound('scrollMenu'));
@@ -238,6 +439,22 @@ class CustomMainMenu extends ScriptedMusicBeatState
 
     menuItems.members[curSelected].animation.play('selected');
     menuItems.members[curSelected].centerOffsets();
+  }
+
+  function toggleStorySelectMenuVisuals(huh:Bool)
+  {
+    var alphaHuh:Float = huh ? 1.0 : 0.0;
+    storyselectOverlay.alpha = alphaHuh;
+    storyselectHeader.alpha = alphaHuh;
+    storyselectButtonCustom.alpha = alphaHuh;
+    storyselectButtonVanilla.alpha = alphaHuh;
+    storyselectLock.alpha = hasUnlockAnimationPlayed ? 0.0 : alphaHuh;
+    storyselectLockText.text = (huh && !isStorySelectUnlocked) ? storyselectLockString : "";
+	
+    if (huh && !isStorySelectUnlocked)
+    {
+      storyselectLock.anim.play('lock-unselect', true);
+    }
   }
 
   override function onOpenSubStateComplete(targetState:FlxSubState)

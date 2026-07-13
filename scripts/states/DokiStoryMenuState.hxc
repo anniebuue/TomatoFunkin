@@ -1,0 +1,250 @@
+import funkin.modding.base.ScriptedMusicBeatState;
+import flixel.FlxSubState;
+import funkin.Paths;
+import funkin.ui.MusicBeatState;
+import flixel.addons.display.FlxBackdrop;
+import funkin.modding.base.ScriptedFlxSpriteGroup;
+import flixel.group.FlxTypedSpriteGroup;
+import flixel.FlxObject;
+import funkin.graphics.FunkinCamera;
+import funkin.graphics.adobeanimate.FlxAtlasSprite;
+import funkin.audio.FunkinSound;
+import flixel.addons.transition.FlxTransitionableState;
+import funkin.util.Constants;
+import funkin.util.WindowUtil;
+import funkin.ui.title.TitleState;
+import funkin.ui.story.StoryMenuState;
+import funkin.ui.mainmenu.MainMenuState;
+import funkin.ui.options.OptionsState;
+import funkin.ui.freeplay.FreeplayState;
+import funkin.ui.debug.DebugMenuSubState;
+import funkin.graphics.FunkinSprite;
+import funkin.data.story.level.LevelRegistry;
+import funkin.data.song.SongRegistry;
+import funkin.ui.transition.LoadingState;
+import funkin.ui.transition.stickers.StickerSubState;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
+import flixel.FlxCamera;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
+import flixel.addons.display.FlxRuntimeShader;
+import funkin.play.PlayStatePlaylist;
+import funkin.play.song.Song;
+import balphabet.BAlphabet;
+import StringTools;
+import funkin.save.Save;
+import funkin.Highscore;
+#if FEATURE_DISCORD_RPC
+import funkin.api.discord.DiscordClient;
+#end
+
+class DokiStoryMenuState extends ScriptedMusicBeatState
+{
+  var bg:FunkinSprite;
+  var curSelected:Int = 0;
+  var weekList:Array<String> = ['jkterjter', 'secret-shhh'];
+  var menulistButtons:Array<FunkinSprite> = null;
+  var storyPortraits:Array<FunkinSprite> = null;
+  
+  var currentDifficultyId:String = 'normal';
+
+  var camHUD:FlxCamera;
+  var confirming:Bool = false;
+  
+  static var rememberedCurSelectedLevelID:Null<Int> = null;
+  
+  var stickerSubState:StickerSubState;
+
+  public function new(?stickers:StickerSubState = null)
+  {
+    super();
+
+    if (stickers?.members != null)
+    {
+      stickerSubState = stickers;
+    }
+  }
+
+  override function create()
+  {
+    super.create();
+    camHUD = new FlxCamera();
+    camHUD.bgColor = 0x00000000;
+
+    FlxG.cameras.reset(new FunkinCamera('dokiStoryMenu'));
+    FlxG.cameras.add(camHUD, false);
+
+    camFollow = new FlxObject(0, 0, 1, 1);
+    add(camFollow);
+    FlxG.camera.follow(camFollow, null, 0.06);
+    FlxG.camera.snapToTarget();
+
+    if (rememberedCurSelectedLevelID != null) curSelected = rememberedCurSelectedLevelID;
+    else rememberedCurSelectedLevelID = curSelected;
+
+    transIn = FlxTransitionableState.defaultTransIn;
+    transOut = FlxTransitionableState.defaultTransOut;
+
+    FunkinSound.playMusic('freakyMenu', {overrideExisting: true, restartTrack: false});
+
+    if (stickerSubState != null)
+    {
+      this.persistentUpdate = true;
+      this.persistentDraw = true;
+
+      openSubState(stickerSubState);
+      stickerSubState.degenStickers();
+    }
+
+    persistentUpdate = persistentDraw = true;
+
+    bg = new FunkinSprite(0, 0).loadTexture("storymenu/tomatofunkin/menu-placeholder");
+    bg.scrollFactor.set();
+    bg.setGraphicSize(Std.int(bg.width * 1.0));
+    bg.updateHitbox();
+    bg.screenCenter();
+    add(bg);
+
+    menulistButtons = [];
+    storyPortraits = [];
+    for (i in 0...weekList.length)
+    {
+      var button:FunkinSprite = new FunkinSprite(55, 245 + i * 118).loadTexture("storymenu/tomatofunkin/streams/week" + Std.string(i + 1));
+      button.updateHitbox();
+      button.scrollFactor.set();
+      button.alpha = (i == curSelected) ? 1.0 : 0.4;
+      add(button);
+
+      menulistButtons.insert(menulistButtons.length, button);
+
+      var portrait:FunkinSprite = new FunkinSprite(464, 17).loadTexture("storymenu/tomatofunkin/art/week" + Std.string(i + 1));
+      portrait.updateHitbox();
+      portrait.scrollFactor.set();
+      portrait.alpha = (i == curSelected) ? 1.0 : 0.0;
+      add(portrait);
+
+      storyPortraits.insert(storyPortraits.length, portrait);
+    }
+
+    #if mobile
+    addBackButton(FlxG.width - 230, FlxG.height - 170, FlxColor.WHITE, goBack, 0.7);
+    #end
+
+    #if FEATURE_TOUCH_CONTROLS
+    FlxG.touches.swipeThreshold.y = 100;
+    #end
+  }
+
+  override function update(elapsed:Float):Void
+  {
+    super.update(elapsed);
+
+    doControl();
+  }
+
+  function doControl()
+  {
+    if (confirming || (stickerSubState?.switchingState ?? false))
+    {
+      return;
+    }
+
+    if (controls.UI_UP_P) changeItem(-1);
+
+    if (controls.UI_DOWN_P) changeItem(1);
+
+    if (controls.BACK)
+    {
+      FunkinSound.playOnce(Paths.sound('cancelMenu'));
+      FlxG.switchState(() -> new MainMenuState());
+    }
+
+    if (controls.ACCEPT)
+    {
+	  selectLevel(curSelected);
+    }
+  }
+
+  function changeItem(huh:Int = 0)
+  {
+    if (huh != 0) FunkinSound.playOnce(Paths.sound('scrollMenu'));
+    menulistButtons[curSelected].alpha = 0.4;
+    storyPortraits[curSelected].alpha = 0.0;
+
+    curSelected += huh;
+
+    if (curSelected >= weekList.length) curSelected = 0;
+    if (curSelected < 0) curSelected = weekList.length - 1;
+
+    rememberedCurSelectedLevelID = curSelected;
+
+    menulistButtons[curSelected].alpha = 1.0;
+    storyPortraits[curSelected].alpha = 1.0;
+  }
+
+  function selectLevel(huh:Int = 0):Void
+  {
+    var currentLevel:Level = LevelRegistry.instance.fetchEntry(weekList[huh]);
+
+    if (!currentLevel.isUnlocked())
+    {
+      confirming = false;
+      FunkinSound.playOnce(Paths.sound('cancelMenu'));
+      return;
+    }
+
+    confirming = true;
+    FunkinSound.playOnce(Paths.sound('confirmMenu'));
+
+    Paths.setCurrentLevel(currentLevel.id);
+
+    PlayStatePlaylist.playlistSongIds = currentLevel.getSongs();
+    PlayStatePlaylist.isStoryMode = true;
+    PlayStatePlaylist.campaignScore = 0;
+
+    var targetSongId:String = PlayStatePlaylist.playlistSongIds.shift();
+
+    var targetSong:Song = SongRegistry.instance.fetchEntry(targetSongId, {variation: Constants.DEFAULT_VARIATION});
+
+    PlayStatePlaylist.campaignId = currentLevel.id;
+    PlayStatePlaylist.campaignTitle = currentLevel.getTitle();
+    PlayStatePlaylist.campaignDifficulty = currentDifficultyId;
+
+    Highscore.tallies.missed = 0;
+    Highscore.tallies.shit = 0;
+    Highscore.tallies.bad = 0;
+    Highscore.tallies.good = 0;
+    Highscore.tallies.sick = 0;
+    Highscore.tallies.combo = 0;
+    Highscore.tallies.totalNotes = 0;
+    Highscore.tallies.totalNotesHit = 0;
+    Highscore.tallies.maxCombo = 0;
+    Highscore.tallies.score = 0;
+    Highscore.tallies.isNewHighscore = false;
+
+    new FlxTimer().start(1, function(tmr:FlxTimer)
+    {
+      #if mobile
+      FlxTween.tween(backButton, {alpha: 0}, 0.2, {ease: FlxEase.quadOut});
+      #end
+
+      FlxTransitionableState.skipNextTransIn = false;
+      FlxTransitionableState.skipNextTransOut = false;
+
+      var targetVariation:String = targetSong.getFirstValidVariation(PlayStatePlaylist.campaignDifficulty);
+
+      FlxG.camera.fade(FlxColor.BLACK, 0.2, false, function()
+      {
+        LoadingState.loadPlayState({
+          targetSong: targetSong,
+          targetDifficulty: PlayStatePlaylist.campaignDifficulty,
+          targetVariation: targetVariation
+        }, true);
+      });
+    });
+  }
+}

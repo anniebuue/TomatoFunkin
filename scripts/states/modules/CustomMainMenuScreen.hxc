@@ -11,9 +11,11 @@ import funkin.ui.mainmenu.MainMenuState;
 import funkin.ui.transition.stickers.StickerSubState;
 import funkin.ui.story.StoryMenuState;
 import flixel.FlxG;
+import funkin.save.Save;
 
 class CustomMainMenuScreen extends Module
 {
+  var st = null;
   var freePlay:FreeplayState = null;
   var stateMenu:Int = 0;
 
@@ -21,6 +23,10 @@ class CustomMainMenuScreen extends Module
   // 1 - In Freeplay
   // 2 - Closing
   // 3 - Rank Anim
+
+  var isStorySelectUnlocked:Bool = false;
+  var hasUnlockAnimationPlayed:Bool = false;
+  var isPlayingCustomStory:Bool = false;
 
   function new()
   {
@@ -42,7 +48,7 @@ class CustomMainMenuScreen extends Module
     FlxTransitionableState.skipNextTransIn = true;
     FlxTransitionableState.skipNextTransOut = true;
 
-    var targetState = (PlayStatePlaylist.isStoryMode) ? (sticker) -> new StoryMenuState(sticker) : (sticker) -> build(sticker);
+    var targetState = (PlayStatePlaylist.isStoryMode) ? (isPlayingCustomStory ? (sticker) -> new DokiStoryMenuState(sticker) : (sticker) -> new StoryMenuState(sticker)) : (sticker) -> build(sticker);
 
     if (PlayStatePlaylist.isStoryMode) PlayStatePlaylist.reset();
 
@@ -51,8 +57,16 @@ class CustomMainMenuScreen extends Module
 
   function build(sticker:StickerSubState)
   {
-    var st = ScriptedMusicBeatState.init("CustomMainMenu");
+    st = ScriptedMusicBeatState.init("CustomMainMenu");
     st.scriptSet("freeplay", new FreeplayState(null, sticker));
+
+    isStorySelectUnlocked = verifyCustomUnlockCondition(false);
+    st.scriptSet("isStorySelectUnlocked", isStorySelectUnlocked);
+    if (!hasUnlockAnimationPlayed) hasUnlockAnimationPlayed = verifyCustomUnlockCondition(true);
+    st.scriptSet("hasUnlockAnimationPlayed", hasUnlockAnimationPlayed);
+
+    isPlayingCustomStory = false;
+
     st.persistentUpdate = false;
     st.persistentDraw = true;
     return st;
@@ -65,12 +79,26 @@ class CustomMainMenuScreen extends Module
       FlxG.switchState(() -> {
         trace("FREEPLAY: ");
         trace(freePlay);
-        var st = ScriptedMusicBeatState.init("CustomMainMenu");
+        st = ScriptedMusicBeatState.init("CustomMainMenu");
         st.scriptSet("freeplay", freePlay);
         if (freePlay != null && freePlay.prepForNewRank) stateMenu = 3;
+
+        isStorySelectUnlocked = verifyCustomUnlockCondition(false);
+        st.scriptSet("isStorySelectUnlocked", isStorySelectUnlocked);
+        if (!hasUnlockAnimationPlayed) hasUnlockAnimationPlayed = verifyCustomUnlockCondition(true);
+        st.scriptSet("hasUnlockAnimationPlayed", hasUnlockAnimationPlayed);
+
+        isPlayingCustomStory = false;
+
         return st; // 3
       });
     }
+
+    if (Std.isOfType(event.targetState, StoryMenuState) && isPlayingCustomStory)
+    {
+      FlxG.switchState(new DokiStoryMenuState());
+    }
+
     super.onStateChangeEnd(event);
   }
 
@@ -84,6 +112,10 @@ class CustomMainMenuScreen extends Module
   override function onUpdate(event)
   {
     super.onUpdate(event);
+
+    if (!isPlayingCustomStory && st != null && st.scriptGet("hasSelectedCustomStory") == true) isPlayingCustomStory = true;
+    if (!hasUnlockAnimationPlayed && st != null && st.scriptGet("hasUnlockAnimationPlayed") == true) hasUnlockAnimationPlayed = true;
+
     if (freePlay == null || !freePlay.active) return;
 
     if (freePlay.subState != null)
@@ -125,5 +157,54 @@ class CustomMainMenuScreen extends Module
       stateMenu = 1;
       freePlay.backingCard.cardGlow.visible = false;
     }
+  }
+  
+  function verifyCustomUnlockCondition(includeAnyCustom:Bool)
+  {
+    var requiredWeeks:Array<String> = ['tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'];
+    for (i in 0...requiredWeeks.length)
+    {
+      if (!customHasBeatenLevel(requiredWeeks[i], ['normal', 'hard']))
+      {
+        return false;
+      }
+    }
+    if (includeAnyCustom)
+    {
+        requiredWeeks = ['jkterjter', 'secret-shhh'];
+        for (i in 0...requiredWeeks.length)
+        {
+          if (customHasBeatenLevel(requiredWeeks[i]))
+          {
+            return true;
+          }
+	    }
+		return false;
+    }
+	return true;
+  }
+  
+  function customHasBeatenLevel(levelId:String, ?difficultyList:Array<String>):Bool
+  {
+    if (difficultyList == null)
+    {
+      difficultyList = ['easy', 'normal', 'hard'];
+    }
+    for (difficulty in difficultyList)
+    {
+      var score:Null<SaveScoreData> = Save.instance.getLevelScore(levelId, difficulty);
+      if (score != null)
+      {
+        if (score.score > 0)
+        {
+          return true;
+        }
+        else
+        {
+          continue;
+        }
+      }
+    }
+    return false;
   }
 }

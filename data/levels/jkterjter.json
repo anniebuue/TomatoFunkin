@@ -2,6 +2,7 @@
   "version": "1.0.0",
   "name": "Tomato Funkin' DEMO",
   "titleAsset": "storymenu/titles/jkterjter",
+  "visible": false,
   "props": [
     {
       "assetPath": "storymenu/props/doki-storymenu",
