@@ -29,6 +29,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.addons.display.FlxRuntimeShader;
 import balphabet.BAlphabet;
 import StringTools;
+import funkin.save.Save;
 
 class CustomMainMenu extends ScriptedMusicBeatState
 {
@@ -162,6 +163,7 @@ class CustomMainMenu extends ScriptedMusicBeatState
       }
     }
 
+    hasUnlockAnimationPlayed = verifyHasUnlockAnimationPlayed();
     curSelectedStorySelect = isStorySelectUnlocked ? 0 : 1;
 
     storyselectOverlay = new FunkinSprite(0, 0);
@@ -343,6 +345,8 @@ class CustomMainMenu extends ScriptedMusicBeatState
             {
               confirming = true;
               hasUnlockAnimationPlayed = true;
+              Save.instance.modOptions.set("hasUnlockAnimationPlayedDokibird", true);
+              Save.instance.flush();
               storyselectLock.anim.play('unlock-anim');
               var animDuration:Float = 64.0 / 24.0;
               isPlayingUnlockAnimation = true;
@@ -455,6 +459,11 @@ class CustomMainMenu extends ScriptedMusicBeatState
     {
       storyselectLock.anim.play('lock-unselect', true);
     }
+  }
+  
+  function verifyHasUnlockAnimationPlayed()
+  {
+    return Save.instance.modOptions.exists("hasUnlockAnimationPlayedDokibird") && (Save.instance.modOptions.get("hasUnlockAnimationPlayedDokibird") == true);
   }
 
   override function onOpenSubStateComplete(targetState:FlxSubState)

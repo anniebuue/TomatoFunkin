@@ -25,7 +25,6 @@ class CustomMainMenuScreen extends Module
   // 3 - Rank Anim
 
   var isStorySelectUnlocked:Bool = false;
-  var hasUnlockAnimationPlayed:Bool = false;
   var isPlayingCustomStory:Bool = false;
 
   function new()
@@ -60,10 +59,8 @@ class CustomMainMenuScreen extends Module
     st = ScriptedMusicBeatState.init("CustomMainMenu");
     st.scriptSet("freeplay", new FreeplayState(null, sticker));
 
-    isStorySelectUnlocked = verifyCustomUnlockCondition(false);
+    isStorySelectUnlocked = verifyCustomUnlockCondition();
     st.scriptSet("isStorySelectUnlocked", isStorySelectUnlocked);
-    if (!hasUnlockAnimationPlayed) hasUnlockAnimationPlayed = verifyCustomUnlockCondition(true);
-    st.scriptSet("hasUnlockAnimationPlayed", hasUnlockAnimationPlayed);
 
     isPlayingCustomStory = false;
 
@@ -83,10 +80,8 @@ class CustomMainMenuScreen extends Module
         st.scriptSet("freeplay", freePlay);
         if (freePlay != null && freePlay.prepForNewRank) stateMenu = 3;
 
-        isStorySelectUnlocked = verifyCustomUnlockCondition(false);
+        isStorySelectUnlocked = verifyCustomUnlockCondition();
         st.scriptSet("isStorySelectUnlocked", isStorySelectUnlocked);
-        if (!hasUnlockAnimationPlayed) hasUnlockAnimationPlayed = verifyCustomUnlockCondition(true);
-        st.scriptSet("hasUnlockAnimationPlayed", hasUnlockAnimationPlayed);
 
         isPlayingCustomStory = false;
 
@@ -114,7 +109,6 @@ class CustomMainMenuScreen extends Module
     super.onUpdate(event);
 
     if (!isPlayingCustomStory && st != null && st.scriptGet("hasSelectedCustomStory") == true) isPlayingCustomStory = true;
-    if (!hasUnlockAnimationPlayed && st != null && st.scriptGet("hasUnlockAnimationPlayed") == true) hasUnlockAnimationPlayed = true;
 
     if (freePlay == null || !freePlay.active) return;
 
@@ -159,7 +153,7 @@ class CustomMainMenuScreen extends Module
     }
   }
   
-  function verifyCustomUnlockCondition(includeAnyCustom:Bool)
+  function verifyCustomUnlockCondition()
   {
     var requiredWeeks:Array<String> = ['tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'];
     for (i in 0...requiredWeeks.length)
@@ -169,21 +163,9 @@ class CustomMainMenuScreen extends Module
         return false;
       }
     }
-    if (includeAnyCustom)
-    {
-        requiredWeeks = ['jkterjter', 'secret-shhh'];
-        for (i in 0...requiredWeeks.length)
-        {
-          if (customHasBeatenLevel(requiredWeeks[i]))
-          {
-            return true;
-          }
-	    }
-		return false;
-    }
 	return true;
   }
-  
+
   function customHasBeatenLevel(levelId:String, ?difficultyList:Array<String>):Bool
   {
     if (difficultyList == null)
