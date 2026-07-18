@@ -205,8 +205,7 @@ class CustomMainMenu extends ScriptedMusicBeatState
     storyselectButtonVanilla.alpha = 0.0;
     add(storyselectButtonVanilla);
 
-    storyselectLock = new FlxAtlasSprite(-500, -290, Paths.animateAtlas("story-select/lock-dokifunk"));
-    storyselectLock.scale.set(2.4, 2.4);
+    storyselectLock = new FlxAtlasSprite(-538, -290, Paths.animateAtlas("story-select/lock-dokifunk"), {swfMode: true});
     storyselectLock.updateHitbox();
     storyselectLock.anim.play('lock-unselect', true);
     storyselectLock.alpha = 0.0;
