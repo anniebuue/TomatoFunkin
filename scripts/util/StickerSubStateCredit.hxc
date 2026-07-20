@@ -47,7 +47,7 @@ class StickerSubStateCredit extends ScriptedMusicBeatSubState
 
     var stickerInfo:StickerPack = new StickerPack(stickerName);
 
-    for (stickerSets in stickerInfo._fetchData("all"))
+    for (stickerSets in StickerPack._fetchData("all"))
     {
       stickers.set(stickerSets, stickerInfo.getStickers(stickerSets));
       trace(stickers);
