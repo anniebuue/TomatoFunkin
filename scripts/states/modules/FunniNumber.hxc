@@ -1,3 +1,4 @@
+import funkin.Paths;
 import funkin.graphics.FunkinSprite;
 import funkin.modding.base.ScriptedFlxSpriteGroup;
 import funkin.FunkinMemory;

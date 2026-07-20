@@ -1,3 +1,4 @@
+import funkin.ui.AtlasText;
 import funkin.modding.base.ScriptedMusicBeatState;
 import flixel.FlxSubState;
 import funkin.Paths;
@@ -27,7 +28,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.addons.display.FlxRuntimeShader;
-import balphabet.BAlphabet;
 import StringTools;
 import funkin.save.Save;
 
@@ -53,7 +53,7 @@ class CustomMainMenu extends ScriptedMusicBeatState
   var storyselectButtonVanilla:FunkinSprite;
   var storyselectLock:FlxAtlasSprite;
   var storyselectLockString:String;
-  var storyselectLockText:BAlphabet;
+  var storyselectLockText:AtlasText;
   var isStorySelectOpen:Bool = false;
   var curSelectedStorySelect:Int = 0;
   
@@ -212,8 +212,8 @@ class CustomMainMenu extends ScriptedMusicBeatState
     add(storyselectLock);
 
     storyselectLockString = "Complete the vanilla game's\nStory Mode to unlock\n(including WeekEnd 1)";
-
-    storyselectLockText = new BAlphabet(-140, -160, storyselectLockString);
+    
+    storyselectLockText = new AtlasText(-140, -160, storyselectLockString,"doki");
     storyselectLockText.scale.set(0.63, 0.7);
     storyselectLockText.text = "";
     add(storyselectLockText);
