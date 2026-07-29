@@ -2,9 +2,12 @@ import funkin.play.stage.Stage;
 import funkin.play.PlayState;
 import funkin.play.GitarooPause;
 import flixel.FlxG;
+import funkin.graphics.FunkinSprite;
 
 class TomatoFlipnoteStage extends Stage
 {
+  var bgColor:FunkinSprite;
+  
   function new()
   {
     super('tomato-flipnote');
@@ -14,7 +17,11 @@ class TomatoFlipnoteStage extends Stage
   {
     super.onCreate(event);
 
-    FlxG.camera.bgColor = 0xFFFFFFFF;
+    bgColor = new FunkinSprite(0, 0);
+    bgColor.makeSolidColor(Std.int(FlxG.width), Std.int(FlxG.height));
+    bgColor.scale.set(bgColor.scale.x * 5.0, bgColor.scale.y * 5.0);
+    bgColor.zIndex = 10;
+    add(bgColor);
   }
 
   override function onSongLoaded(event)

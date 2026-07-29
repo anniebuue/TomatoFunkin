@@ -12,12 +12,31 @@ import funkin.ui.transition.stickers.StickerSubState;
 import funkin.ui.story.StoryMenuState;
 import flixel.FlxG;
 import funkin.save.Save;
+import funkin.ui.FullScreenScaleMode;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.math.FlxPoint;
+import flixel.util.FlxAxes;
+import flixel.util.FlxHorizontalAlign;
+import flixel.util.FlxVerticalAlign;
+import lime.app.Application;
+import funkin.util.Constants;
+import funkin.util.WindowUtil;
 
 class CustomMainMenuScreen extends Module
 {
   var st = null;
   var freePlay:FreeplayState = null;
   var stateMenu:Int = 0;
+  var currentWindowWidth:Int = 1280;
+  var currentWindowHeight:Int = 720;
+  var savedWindowWidth:Int = 1280;
+  var savedWindowHeight:Int = 720;
+  var maximizedWindowWidth:Int = 0;
+  var maximizedWindowHeight:Int = 0;
+  var aspectRatio:Float;
+  var screenStretched:Bool = false;
+  var triggeredResizableTimer:Bool = false;
 
   // 0 - Outside
   // 1 - In Freeplay
@@ -35,6 +54,14 @@ class CustomMainMenuScreen extends Module
   override function onCreate(event)
   {
     PauseSubState.PAUSE_MENU_ENTRIES_STANDARD[4].callback = onPlayStateExit;
+    Application.current.window.width = currentWindowWidth;
+    Application.current.window.height = currentWindowHeight;
+    Application.current.window.resizable = false;
+    aspectRatio = 16.0 / 9.0;
+    FlxG.scaleMode = new FullScreenScaleMode(false);
+    FlxG.scaleMode.onMeasureAwait(currentWindowWidth, currentWindowHeight);
+    FullScreenScaleMode.maxAspectRatio = FlxPoint.get(16, 9);
+    screenStretched = false;
     super.onCreate(event);
   }
 
@@ -57,7 +84,9 @@ class CustomMainMenuScreen extends Module
   function build(sticker:StickerSubState)
   {
     st = ScriptedMusicBeatState.init("CustomMainMenu");
-    st.scriptSet("freeplay", new FreeplayState(null, sticker));
+    if (freePlay != null) freePlay.stickerSubState = sticker;
+    st.scriptSet("freeplay", (freePlay != null) ? freePlay : new FreeplayState(null, sticker));
+    stateMenu = 3;
 
     isStorySelectUnlocked = verifyCustomUnlockCondition();
     st.scriptSet("isStorySelectUnlocked", isStorySelectUnlocked);
@@ -107,6 +136,76 @@ class CustomMainMenuScreen extends Module
   override function onUpdate(event)
   {
     super.onUpdate(event);
+
+    if (!triggeredResizableTimer)
+    {
+      triggeredResizableTimer = true;
+      new FlxTimer().start(0.8, (_) -> {
+        Application.current.window.resizable = true;
+      });
+    }
+
+    if (Application.current.window.fullscreen || (Application.current.window.maximized && (!screenStretched || (Application.current.window.width == maximizedWindowWidth && Application.current.window.height == maximizedWindowHeight))))
+    {
+      if (!screenStretched)
+      {
+        screenStretched = true;
+        savedWindowWidth = currentWindowWidth;
+        savedWindowHeight = currentWindowHeight;
+        maximizedWindowWidth = Application.current.window.width;
+        maximizedWindowHeight = Application.current.window.height;
+      }
+      currentWindowWidth = Application.current.window.width;
+      currentWindowHeight = Application.current.window.height;
+      var currentAspectRatio:Float = Std.parseFloat(Std.string(currentWindowWidth)) / Std.parseFloat(Std.string(currentWindowHeight));
+      var offsetRenderX:Int = 0;
+      var offsetRenderY:Int = 0;
+      if (currentAspectRatio > aspectRatio)
+      {
+        offsetRenderX = (currentWindowWidth - currentWindowHeight * aspectRatio) / 2;
+        currentWindowWidth = currentWindowHeight * aspectRatio;
+      }
+      else
+      {
+        offsetRenderY = (currentWindowHeight - currentWindowWidth / aspectRatio) / 2;
+        currentWindowHeight = currentWindowWidth / aspectRatio;
+      }
+      FlxG.scaleMode.horizontalAlign = FlxHorizontalAlign.CENTER;
+      FlxG.scaleMode.verticalAlign = FlxVerticalAlign.CENTER;
+      FlxG.scaleMode.onMeasureInstant(currentWindowWidth, currentWindowHeight);
+	  FlxG.scaleMode.offset.x = offsetRenderX;
+	  FlxG.scaleMode.offset.y = offsetRenderY;
+      FullScreenScaleMode.cutoutSize.set(offsetRenderX, offsetRenderY);
+      FullScreenScaleMode.gameCutoutSize.set(offsetRenderX, offsetRenderY);
+      FlxG.scaleMode.updateGamePosition();
+    }
+    else if (screenStretched)
+    {
+      screenStretched = false;
+      currentWindowWidth = savedWindowWidth;
+      currentWindowHeight = savedWindowHeight;
+      Application.current.window.width = currentWindowWidth;
+      Application.current.window.height = currentWindowHeight;
+      Application.current.window.fullscreen = false;
+      Application.current.window.maximized = false;
+    }
+
+    if (!screenStretched && (Application.current.window.width != currentWindowWidth || Application.current.window.height != currentWindowHeight))
+    {
+      if (Application.current.window.width > Application.current.window.height)
+      {
+        currentWindowWidth = Application.current.window.width;
+        currentWindowHeight = currentWindowWidth / aspectRatio;
+      }
+      else
+      {
+        currentWindowHeight = Application.current.window.height;
+        currentWindowWidth = Application.current.window.height * aspectRatio;
+      }
+      Application.current.window.width = currentWindowWidth;
+      Application.current.window.height = currentWindowHeight;
+      FlxG.scaleMode.onMeasureAwait(currentWindowWidth, currentWindowHeight);
+    }
 
     if (!isPlayingCustomStory && st != null && st.scriptGet("hasSelectedCustomStory") == true) isPlayingCustomStory = true;
 
