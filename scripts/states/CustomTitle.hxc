@@ -42,6 +42,7 @@ class CustomTitle extends MusicBeatState
 
   var logoBl:FunkinSprite;
   var dokiBitch:FlxAtlasSprite;
+  var bfBitch:FlxAtlasSprite;
 
   function startIntro():Void
   {
@@ -86,16 +87,22 @@ class CustomTitle extends MusicBeatState
     logoBl.updateHitbox();
     add(logoBl);
 
-    dokiBitch = new FlxAtlasSprite(0, 0, Paths.animateAtlas("start-menu/doki-freakymenu"));
+    dokiBitch = new FlxAtlasSprite(248, 165, Paths.animateAtlas("start-menu/doki-bf-freakymenu"));
     dokiBitch.scale.set(1, 1);
     dokiBitch.updateHitbox();
-    dokiBitch.anim.play('doki-freakymenu', true);
+    dokiBitch.anim.play('title-maple', true);
     add(dokiBitch);
+
+    bfBitch = new FlxAtlasSprite(-94, 279, Paths.animateAtlas("start-menu/doki-bf-freakymenu"));
+    bfBitch.scale.set(1, 1);
+    bfBitch.updateHitbox();
+    bfBitch.anim.play('bf-title', true);
+    add(bfBitch);
 
     var button:FunkinSprite = new FunkinSprite(799, 627).loadTexture("start-menu/start-button");
     add(button);
 
-    dokiBitch.shader = button.shader = logoBl.shader = bg_6.shader = bg_5.shader = bg_4.shader = bg_3.shader = bg_2.shader = bg_1.shader = bg_0.shader = swagShader.shader; // funi Shader
+    dokiBitch.shader = bfBitch.shader = button.shader = logoBl.shader = bg_6.shader = bg_5.shader = bg_4.shader = bg_3.shader = bg_2.shader = bg_1.shader = bg_0.shader = swagShader.shader; // funi Shader
 
     skipIntro();
 
@@ -187,7 +194,8 @@ class CustomTitle extends MusicBeatState
     if (skippedIntro)
     {
       if (logoBl != null && logoBl.animation != null) logoBl.animation.play('bump', true);
-      if (dokiBitch != null && dokiBitch.anim != null) dokiBitch.anim.play('doki-freakymenu', true);
+      if (dokiBitch != null && dokiBitch.anim != null) dokiBitch.anim.play('title-maple', true);
+      if (bfBitch != null && bfBitch.anim != null) bfBitch.anim.play('bf-title', true);
     }
   }
 
